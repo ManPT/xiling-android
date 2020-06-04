@@ -37,8 +37,9 @@
         android:largeHeap="true"
         android:persistent="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:label,android:icon, android:theme">
-        <activity android:name=".ddui.activity.RealAuthenticationWeChatActivity"></activity>
+        tools:replace="android:label, android:theme">
+        <activity android:name=".ddui.activity.NationalPavilionActivity"></activity>
+        <activity android:name=".ddui.activity.RealAuthenticationWeChatActivity" />
         <activity android:name=".ddui.activity.BusinessLicenseUpLoadActivity" />
         <activity android:name=".ddui.activity.StorePhotoUploadActivity" />
         <activity android:name=".ddui.activity.RealAuthenticationEntityActivity" />
@@ -221,14 +222,12 @@
         <activity
             android:name=".module.user.AboutUsActivity"
             android:launchMode="singleTop" />
-
         <activity
             android:name=".module.address.AddressListActivity"
             android:launchMode="singleTop" />
         <activity
             android:name=".module.address.AddressFormActivity"
             android:launchMode="singleTop" />
-
         <activity android:name=".module.transfer.StepFirstActivity" />
         <activity android:name=".module.transfer.StepSecondActivity" />
         <activity android:name=".module.transfer.StepThirdActivity" />
@@ -251,7 +250,6 @@
         <activity
             android:name=".module.pay.PayBalanceActivity"
             android:launchMode="singleTop" />
-
         <activity
             android:name=".ddui.activity.MessageGroupActivity"
             android:launchMode="singleTop" />
@@ -292,7 +290,6 @@
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
             android:screenOrientation="behind" />
-
         <activity
             android:name="com.sobot.chat.activity.SobotChatActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -373,11 +370,7 @@
         <activity android:name=".module.store.StoreSettingActivity" />
         <activity android:name=".module.store.StoreManageActivity" />
         <activity android:name=".module.order.RefundOrderListActivity" />
-        <activity android:name=".module.store.StoreCommentActivity">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".module.store.StoreCommentActivity"></activity>
         <activity android:name=".module.order.ShipActivity" />
         <activity android:name=".module.qrcode.ScanActivity" />
         <activity android:name=".module.store.StoreInfoActivity" />
@@ -401,8 +394,7 @@
         <activity android:name=".module.user.SetPasswordActivity" />
         <activity android:name=".module.product.SalePriductListActivity" />
         <activity android:name=".module.publish.CategoryActivity" />
-        <activity android:name=".module.publish.VideoPreViewActivity" />
-        <!-- umeng share -->
+        <activity android:name=".module.publish.VideoPreViewActivity" /> <!-- umeng share -->
         <!-- 微信 -->
         <activity
             android:name=".wxapi.WXEntryActivity"

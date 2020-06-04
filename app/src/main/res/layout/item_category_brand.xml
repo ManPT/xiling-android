@@ -1,28 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    >
+    android:layout_height="@dimen/dp_40"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/dp_12">
 
     <ImageView
         android:id="@+id/iv_icon"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
-        android:scaleType="fitCenter"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        android:layout_centerVertical="true"
         android:padding="@dimen/dp_1"
-        />
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#ff202020"
-        android:lines="1"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_centerVertical="true"
         android:ellipsize="end"
+        android:lines="1"
+        android:layout_toRightOf="@id/iv_icon"
+        android:textColor="#ff202020"
         android:textSize="@dimen/sp_13"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_10"
-        android:visibility="gone"
         />
-</LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#F5F5F5"
+        android:layout_alignParentBottom="true"
+        />
+</RelativeLayout>

@@ -437,12 +437,14 @@ public class XLCashierActivity extends BaseActivity {
                    // XLOrderDetailsActivity.jumpOrderDetailsActivity(context, key);
                     //拆单需求变更，跳转订单列表
                     OrderListActivit.jumpOrderList(context,ORDER_WAIT_SHIP);
+                    ToastUtil.showSuccessToast(context, "支付成功");
                 } else if (type.equals(PAY_TYPE_CHARGE_MONEY)) {
-                    EventBus.getDefault().post(new EventMessage(RECHARGE_SUCCESS));
+                    EventBus.getDefault().post(new EventMessage(RECHARGE_SUCCESS,1));
                 } else if (type.equals(PAY_TYPE_WEEK_CARD)) {
                     EventBus.getDefault().post(new EventMessage(WEEK_CARD_PAY));
+                    ToastUtil.showSuccessToast(context, "支付成功");
                 }
-                ToastUtil.showSuccessToast(context, "支付成功");
+
                 finish();
                 break;
             case PayMsg.ACTION_WXPAY_FAIL:

@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.xiling.R;
+import com.xiling.ddui.bean.AutoClickBean;
+import com.xiling.ddui.bean.NationalPavilionBean;
 import com.xiling.ddui.view.RLoopRecyclerView;
 import com.xiling.dduis.bean.HomeDataBean;
 import com.xiling.image.GlideUtils;
@@ -19,7 +21,7 @@ import com.xiling.image.GlideUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeBrandAdapter extends RLoopRecyclerView.LoopAdapter<HomeBrandAdapter.MyViewHolder,HomeDataBean.BrandHotSaleListBean> {
+public class HomeBrandAdapter extends RLoopRecyclerView.LoopAdapter<HomeBrandAdapter.MyViewHolder, NationalPavilionBean> {
 
     private OnItemClickListener onItemClickListener;
     private Context mContext;
@@ -36,9 +38,9 @@ public class HomeBrandAdapter extends RLoopRecyclerView.LoopAdapter<HomeBrandAda
 
     @Override
     public void onBindLoopViewHolder(HomeBrandAdapter.MyViewHolder holder, final int position) {
-        HomeDataBean.BrandHotSaleListBean item = datas.get(position);
-        if (!TextUtils.isEmpty(item.getImgUrl())) {
-            GlideUtils.loadImage(mContext, holder.imageView, item.getImgUrl());
+        NationalPavilionBean item = datas.get(position);
+        if (!TextUtils.isEmpty(item.getCountryBanner())) {
+            GlideUtils.loadImage(mContext, holder.imageView, item.getCountryBanner());
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +81,7 @@ public class HomeBrandAdapter extends RLoopRecyclerView.LoopAdapter<HomeBrandAda
 
 
     public interface OnItemClickListener {
-        void onItemClickListener(HomeDataBean.BrandHotSaleListBean bean, int position);
+        void onItemClickListener(NationalPavilionBean bean, int position);
     }
 
 }

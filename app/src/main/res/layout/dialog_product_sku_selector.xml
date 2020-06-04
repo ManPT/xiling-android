@@ -9,14 +9,13 @@
     <LinearLayout
         android:id="@+id/layoutBotttom"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_82"
+        android:layout_height="@dimen/dp_64"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingLeft="20dp"
-        android:paddingTop="18dp"
-        android:paddingRight="20dp"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12"
         android:paddingBottom="14dp">
 
         <TextView
@@ -51,11 +50,45 @@
             android:textSize="14sp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/ll_bottom2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/layoutBotttom"
+        android:paddingBottom="@dimen/dp_5"
+        android:paddingTop="@dimen/dp_20"
+        android:paddingLeft="@dimen/dp_12"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_freight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ff202020"
+            android:textSize="@dimen/sp_12"
+            />
+
+        <TextView
+            android:id="@+id/tvSkuName"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_22"
+            android:text="已选择 一箱/60瓶装/500ml"
+            android:textColor="#ff999999"
+            android:paddingLeft="@dimen/dp_2"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/sp_12"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="#F5F5F5"
+            />
+
+    </LinearLayout>
+
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/layoutBotttom"
+        android:layout_above="@id/ll_bottom2"
         android:background="@color/white">
 
         <LinearLayout
@@ -129,11 +162,11 @@
                             android:textSize="@dimen/sp_20" />
 
                         <TextView
-                            android:layout_width="@dimen/dp_46"
-                            android:layout_height="@dimen/dp_15"
+                            android:id="@+id/iv_rate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/dp_8"
                             android:gravity="center"
-                            android:background="@drawable/bg_special_price"
                             android:textColor="#fffdddab"
                             android:textSize="@dimen/sp_12" />
 
@@ -170,21 +203,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_12"
-                        android:layout_marginTop="@dimen/dp_2"
-                        android:text="库存392件"
+                        android:layout_marginTop="@dimen/dp_20"
                         android:textColor="#ffaaaaaa"
-                        android:textSize="@dimen/sp_13" />
-
-
-                    <TextView
-                        android:id="@+id/tvSkuName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_12"
-                        android:ellipsize="end"
-                        android:lines="1"
-                        android:layout_marginTop="@dimen/dp_10"
-                        android:textColor="#202020"
                         android:textSize="@dimen/sp_13" />
 
                 </LinearLayout>
@@ -214,13 +234,31 @@
                     android:text="请确定购买数量"
                     android:textSize="@dimen/sp_12" />
 
-
-                <com.xiling.shared.component.NumberField
-                    android:id="@+id/numberField"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_20"
-                    android:layout_marginTop="@dimen/dp_14" />
+                    android:layout_marginTop="@dimen/dp_14">
+
+
+                    <com.xiling.shared.component.NumberField
+                        android:id="@+id/numberField"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tv_step"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/dp_5"
+                        android:layout_toRightOf="@id/numberField"
+                        android:textColor="#ffe0614c"
+                        android:textSize="@dimen/sp_10"
+                        android:visibility="gone"
+                        />
+
+                </RelativeLayout>
 
 
             </LinearLayout>

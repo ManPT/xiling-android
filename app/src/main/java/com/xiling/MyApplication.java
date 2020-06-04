@@ -17,6 +17,7 @@ import com.xiling.BuildConfig;
 import com.xiling.ddui.config.AppConfig;
 import com.xiling.ddui.manager.CSManager;
 import com.xiling.ddui.tools.DDRefreshHeader;
+import com.xiling.ddui.tools.XLManager;
 import com.xiling.module.auth.Config;
 import com.xiling.shared.manager.PushManager;
 import com.xiling.shared.manager.ServiceManager;
@@ -99,7 +100,6 @@ public class MyApplication extends MultiDexApplication {
         if (AppConfig.DEBUG) {
 //            LeakCanary.install(this);
         }
-
         Logger.init().logLevel(LogLevel.FULL);
 //        Logger.init().logLevel(AppConfig.DEBUG ? LogLevel.FULL : LogLevel.NONE);
         PushManager.registerJPushService(this);

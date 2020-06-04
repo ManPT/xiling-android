@@ -15,6 +15,7 @@ import com.xiling.ddui.custom.popupwindow.ScreeningPopupWindow;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ScreeningView extends RelativeLayout {
 
@@ -25,8 +26,6 @@ public class ScreeningView extends RelativeLayout {
     ImageView sortStatusView;
     @BindView(R.id.ll_price)
     LinearLayout llPrice;
-    @BindView(R.id.ll_sales_volume)
-    LinearLayout llSalesVolume;
     @BindView(R.id.ll_screening)
     LinearLayout llScreening;
     @BindView(R.id.tv_sales)
@@ -35,6 +34,10 @@ public class ScreeningView extends RelativeLayout {
     ImageView salesStatusView;
 
     ScreeningPopupWindow screeningPopupWindow;
+    @BindView(R.id.tv_profit)
+    TextView tvProfit;
+    @BindView(R.id.profitStatusView)
+    ImageView profitStatusView;
 
     /**
      * 排序属性 0-价格,1-上新,2-销量
@@ -47,7 +50,9 @@ public class ScreeningView extends RelativeLayout {
      */
     private int orderPriceType = 0;
 
-    private int orderSaleType = 0;
+    private int orderSaleType = -1;
+
+    private int orderProfitType = -1;
 
 
     public void setOnItemClickLisener(OnItemClickLisener onItemClickLisener) {
@@ -81,7 +86,6 @@ public class ScreeningView extends RelativeLayout {
         ButterKnife.bind(this, view);
 
         llPrice = view.findViewById(R.id.ll_price);
-        llSalesVolume = view.findViewById(R.id.ll_sales_volume);
         llScreening = view.findViewById(R.id.ll_screening);
         llPrice.setOnClickListener(new OnClickListener() {
             @Override
@@ -91,6 +95,9 @@ public class ScreeningView extends RelativeLayout {
                     if (orderBy == 2) {
                         tvSales.setTextColor(Color.parseColor("#AAAAAA"));
                         salesStatusView.setImageResource(R.mipmap.icon_price_unselect);
+                    } else if (orderBy == 3) {
+                        tvProfit.setTextColor(Color.parseColor("#AAAAAA"));
+                        profitStatusView.setImageResource(R.mipmap.icon_price_unselect);
                     }
 
 
@@ -118,42 +125,6 @@ public class ScreeningView extends RelativeLayout {
             }
         });
 
-        llSalesVolume.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (orderBy != 2) {
-
-                    if (orderBy == 0) {
-                        tvPrice.setTextColor(Color.parseColor("#AAAAAA"));
-                        sortStatusView.setImageResource(R.mipmap.icon_price_unselect);
-                    }
-
-                    orderBy = 2;
-                    tvSales.setTextColor(Color.parseColor("#FF4647"));
-                    if (orderSaleType == 0) {
-                        salesStatusView.setImageResource(R.mipmap.icon_price_down);
-                    } else {
-                        salesStatusView.setImageResource(R.mipmap.icon_price_up);
-                    }
-                } else {
-                    if (orderSaleType == 0) {
-                        orderSaleType = 1;
-                        salesStatusView.setImageResource(R.mipmap.icon_price_up);
-                    } else {
-                        orderSaleType = 0;
-                        salesStatusView.setImageResource(R.mipmap.icon_price_down);
-                    }
-                }
-
-                if (onItemClickLisener != null) {
-                    onItemClickLisener.onSort(orderBy, orderSaleType);
-                }
-
-
-            }
-        });
-
         llScreening.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,9 +135,9 @@ public class ScreeningView extends RelativeLayout {
                 screeningPopupWindow.showForRight(ScreeningView.this);
                 screeningPopupWindow.setOnScreenListener(new ScreeningPopupWindow.onScreenListener() {
                     @Override
-                    public void onScreenListener(int isShippingFree, String minPrice, String maxPrice) {
+                    public void onScreenListener(String tradeType, String saleType, String minPrice, String maxPrice) {
                         if (onItemClickLisener != null) {
-                            onItemClickLisener.onFilter(isShippingFree, minPrice, maxPrice);
+                            onItemClickLisener.onFilter(tradeType, saleType,minPrice, maxPrice);
                         }
                     }
                 });
@@ -177,10 +148,70 @@ public class ScreeningView extends RelativeLayout {
         addView(view);
     }
 
+    @OnClick({R.id.ll_profit,R.id.ll_sales_volume})
+    public void onViewClicked(View view) {
+        switch (view.getId()){
+            case R.id.ll_profit:
+                if (orderBy != 3) {
+
+                    if (orderBy == 0) {
+                        tvPrice.setTextColor(Color.parseColor("#AAAAAA"));
+                        sortStatusView.setImageResource(R.mipmap.icon_price_unselect);
+                    } else if (orderBy == 2) {
+                        tvSales.setTextColor(Color.parseColor("#AAAAAA"));
+                        salesStatusView.setImageResource(R.mipmap.icon_price_unselect);
+                    }
+
+
+                    orderBy = 3;
+                    tvProfit.setTextColor(Color.parseColor("#FF4647"));
+                    orderProfitType = 1;
+                } else {
+                    if (orderProfitType == 1) {
+                        tvProfit.setTextColor(Color.parseColor("#AAAAAA"));
+                        orderProfitType = -1;
+                    } else {
+                        tvProfit.setTextColor(Color.parseColor("#FF4647"));
+                        orderProfitType = 1;
+                    }
+                }
+                break;
+            case R.id.ll_sales_volume:
+                if (orderBy != 2) {
+
+                    if (orderBy == 0) {
+                        tvPrice.setTextColor(Color.parseColor("#AAAAAA"));
+                        sortStatusView.setImageResource(R.mipmap.icon_price_unselect);
+                    } else if (orderBy == 3) {
+                        tvProfit.setTextColor(Color.parseColor("#AAAAAA"));
+                        profitStatusView.setImageResource(R.mipmap.icon_price_unselect);
+                    }
+                    orderBy = 2;
+                    tvSales.setTextColor(Color.parseColor("#FF4647"));
+                    orderSaleType = 0;
+                } else {
+                    if (orderSaleType == 0) {
+                        orderSaleType = -1;
+                        tvSales.setTextColor(Color.parseColor("#AAAAAA"));
+                    } else {
+                        orderSaleType = 0;
+                        tvSales.setTextColor(Color.parseColor("#FF4647"));
+                    }
+                }
+
+                break;
+        }
+
+
+        if (onItemClickLisener != null) {
+            onItemClickLisener.onSort(orderBy, orderProfitType);
+        }
+    }
+
     public interface OnItemClickLisener {
         void onSort(int orderBy, int orderType);
 
-        void onFilter(int isShippingFree, String minPrice, String maxPrice);
+        void onFilter(String tradeType, String saleType, String minPrice, String maxPrice);
     }
 
 }

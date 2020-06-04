@@ -69,19 +69,22 @@ public class ShopFragment extends BaseFragment implements OnRefreshListener, OnL
     List<HomeRecommendDataBean.DatasBean> shopDataList = new ArrayList<>();
     ShopListAdapter shopAdapter;
 
+    private String indexCategoryId;
     private String categoryId;
     private String secondCategoryId;
+    private String counrtyId;
 
     private String minPrice, maxPrice;
-    private int isShippingFree;
     private int orderBy;
     private int orderType;
+    private String saleType;
+    private String tradeType;
     private String keyWord;
     private String brandId;
 
     HashMap<String, String> requestMap = new HashMap<>();
 
-    public static ShopFragment newInstance(String categoryId, String secondCategoryId, String brandId, String minPrice, String maxPrice, int isShippingFree, int orderBy, int orderType, String keyWord) {
+    public static ShopFragment newInstance(String categoryId, String secondCategoryId, String brandId, String minPrice, String maxPrice, int orderBy, int orderType, String saleType, String tradeType, String keyWord) {
         ShopFragment fragment = new ShopFragment();
         Bundle args = new Bundle();
         args.putString("categoryId", categoryId);
@@ -89,26 +92,63 @@ public class ShopFragment extends BaseFragment implements OnRefreshListener, OnL
         args.putString("brandId", brandId);
         args.putString("minPrice", minPrice);
         args.putString("maxPrice", maxPrice);
-        args.putInt("isShippingFree", isShippingFree);
         args.putInt("orderBy", orderBy);
         args.putInt("orderType", orderType);
         args.putString("keyWord", keyWord);
+        args.putString("saleType", saleType);
+        args.putString("tradeType", tradeType);
         fragment.setArguments(args);
         return fragment;
     }
 
+    public static ShopFragment newInstance(String indexCategoryId, String brandId, String minPrice, String maxPrice, int orderBy, int orderType, String saleType, String tradeType, String keyWord) {
+        ShopFragment fragment = new ShopFragment();
+        Bundle args = new Bundle();
+        args.putString("indexCategoryId", indexCategoryId);
+        args.putString("brandId", brandId);
+        args.putString("minPrice", minPrice);
+        args.putString("maxPrice", maxPrice);
+        args.putInt("orderBy", orderBy);
+        args.putInt("orderType", orderType);
+        args.putString("keyWord", keyWord);
+        args.putString("saleType", saleType);
+        args.putString("tradeType", tradeType);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
+    public static ShopFragment newInstance(String countryId, String minPrice, String maxPrice, int orderBy, int orderType, String saleType, String tradeType, String keyWord) {
+        ShopFragment fragment = new ShopFragment();
+        Bundle args = new Bundle();
+        args.putString("countryId", countryId);
+        args.putString("minPrice", minPrice);
+        args.putString("maxPrice", maxPrice);
+        args.putInt("orderBy", orderBy);
+        args.putInt("orderType", orderType);
+        args.putString("keyWord", keyWord);
+        args.putString("saleType", saleType);
+        args.putString("tradeType", tradeType);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
     private void getArgumentsData() {
         Bundle arguments = getArguments();
         if (arguments != null) {
+            indexCategoryId = arguments.getString("indexCategoryId");
             categoryId = arguments.getString("categoryId");
             secondCategoryId = arguments.getString("secondCategoryId");
             brandId = arguments.getString("brandId");
             minPrice = arguments.getString("minPrice");
             maxPrice = arguments.getString("maxPrice");
             keyWord = arguments.getString("keyWord");
-            isShippingFree = arguments.getInt("isShippingFree");
             orderBy = arguments.getInt("orderBy");
             orderType = arguments.getInt("orderType");
+            saleType = arguments.getString("saleType");
+            tradeType = arguments.getString("tradeType");
+            counrtyId = arguments.getString("counrtyId");
         }
     }
 
@@ -126,7 +166,7 @@ public class ShopFragment extends BaseFragment implements OnRefreshListener, OnL
         ShopCardManager.getInstance().requestUpDataShopCardCount();
         View view = inflater.inflate(R.layout.fragment_shop, container, false);
         unbinder = ButterKnife.bind(this, view);
-        btnGoCard.setVisibility(TextUtils.isEmpty(secondCategoryId)?View.VISIBLE:View.GONE);
+        // btnGoCard.setVisibility(TextUtils.isEmpty(secondCategoryId)?View.VISIBLE:View.GONE);
         smartRefreshLayout.setEnableLoadMore(true);
         smartRefreshLayout.setEnableRefresh(true);
         smartRefreshLayout.setOnLoadMoreListener(this);
@@ -137,29 +177,35 @@ public class ShopFragment extends BaseFragment implements OnRefreshListener, OnL
         recyclerShop.setLayoutManager(shopLayoutManager);
         shopAdapter = new ShopListAdapter(R.layout.item_home_recommend, shopDataList);
         recyclerShop.setAdapter(shopAdapter);
-        requestShop(minPrice, maxPrice, isShippingFree, orderBy, orderType, keyWord);
+        requestShop(minPrice, maxPrice, orderBy, orderType, saleType, tradeType, keyWord);
         return view;
     }
 
     /**
      * 请求数据
      */
-    public void requestShopFill(String minPrice, String maxPrice, int isShippingFree, int orderBy, int orderType, String keyWord) {
+    public void requestShopFill(String minPrice, String maxPrice, int orderBy, int orderType, String saleType, String tradeType, String keyWord) {
         Bundle arguments = getArguments();
         if (arguments != null) {
             arguments.putString("minPrice", minPrice);
             arguments.putString("maxPrice", maxPrice);
             arguments.putString("keyWord", keyWord);
-            arguments.putInt("isShippingFree", isShippingFree);
             arguments.putInt("orderBy", orderBy);
-            arguments.putInt("orderType", orderType);
+            if (orderType > 0){
+                arguments.putInt("orderType", orderType);
+            }
+
+            arguments.putString("saleType", saleType);
+            arguments.putString("tradeType", tradeType);
+
         }
         this.pageOffset = 1;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
-        this.isShippingFree = isShippingFree;
         this.orderBy = orderBy;
         this.orderType = orderType;
+        this.saleType = saleType;
+        this.tradeType = tradeType;
         this.keyWord = keyWord;
         requestMap.clear();
         if (!TextUtils.isEmpty(categoryId)) {
@@ -175,17 +221,24 @@ public class ShopFragment extends BaseFragment implements OnRefreshListener, OnL
         }
 
         if (!TextUtils.isEmpty(this.minPrice)) {
-            requestMap.put("minPrice", this.minPrice+"00");
+            requestMap.put("minPrice", this.minPrice + "00");
         }
 
         if (!TextUtils.isEmpty(this.maxPrice)) {
-            requestMap.put("maxPrice", this.maxPrice+"00");
+            requestMap.put("maxPrice", this.maxPrice + "00");
         }
         if (!TextUtils.isEmpty(keyWord)) {
             requestMap.put("keyWord", keyWord);
         }
 
-        requestMap.put("isShippingFree", isShippingFree + "");
+        if (!TextUtils.isEmpty(saleType)) {
+            requestMap.put("saleType", saleType);
+        }
+
+        if (!TextUtils.isEmpty(tradeType)) {
+            requestMap.put("tradeType", tradeType);
+        }
+
         requestMap.put("orderBy", orderBy + "");
         requestMap.put("orderType", orderType + "");
         requestMap.put("pageOffset", pageOffset + "");
@@ -237,23 +290,30 @@ public class ShopFragment extends BaseFragment implements OnRefreshListener, OnL
         }
     }
 
-    public void requestShop(String minPrice, String maxPrice, int isShippingFree, int orderBy, int orderType, String keyWord) {
+    public void requestShop(String minPrice, String maxPrice, int orderBy, int orderType, String saleType, String tradeType, String keyWord) {
         Bundle arguments = getArguments();
         if (arguments != null) {
             arguments.putString("minPrice", minPrice);
             arguments.putString("maxPrice", maxPrice);
             arguments.putString("keyWord", keyWord);
-            arguments.putInt("isShippingFree", isShippingFree);
             arguments.putInt("orderBy", orderBy);
             arguments.putInt("orderType", orderType);
+            arguments.putString("saleType", saleType);
+            arguments.putString("tradeType", tradeType);
         }
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
-        this.isShippingFree = isShippingFree;
         this.orderBy = orderBy;
         this.orderType = orderType;
         this.keyWord = keyWord;
+        this.saleType = saleType;
+        this.tradeType = tradeType;
         requestMap.clear();
+
+        if (!TextUtils.isEmpty(indexCategoryId)) {
+            requestMap.put("indexCategoryId", indexCategoryId);
+        }
+
         if (!TextUtils.isEmpty(categoryId)) {
             requestMap.put("categoryId", categoryId);
         }
@@ -267,19 +327,34 @@ public class ShopFragment extends BaseFragment implements OnRefreshListener, OnL
         }
 
         if (!TextUtils.isEmpty(minPrice)) {
-            requestMap.put("minPrice", minPrice+"00");
+            requestMap.put("minPrice", minPrice + "00");
         }
 
         if (!TextUtils.isEmpty(maxPrice)) {
-            requestMap.put("maxPrice", maxPrice+"00");
+            requestMap.put("maxPrice", maxPrice + "00");
         }
+
         if (!TextUtils.isEmpty(keyWord)) {
             requestMap.put("keyWord", keyWord);
         }
 
-        requestMap.put("isShippingFree", isShippingFree + "");
+        if (!TextUtils.isEmpty(saleType)) {
+            requestMap.put("saleType", saleType);
+        }
+
+        if (!TextUtils.isEmpty(tradeType)) {
+            requestMap.put("tradeType", tradeType);
+        }
+
+        if (!TextUtils.isEmpty(counrtyId)) {
+            requestMap.put("counrtyId", counrtyId);
+        }
+
+
+
         requestMap.put("orderBy", orderBy + "");
         requestMap.put("orderType", orderType + "");
+
         requestMap.put("pageOffset", pageOffset + "");
         requestMap.put("pageSize", pageSize + "");
         Log.d("requestJSON", "request map = " + requestMap.toString());
@@ -334,7 +409,7 @@ public class ShopFragment extends BaseFragment implements OnRefreshListener, OnL
         //上拉加载
         if (pageOffset < totalPage) {
             pageOffset++;
-            requestShop(minPrice, maxPrice, isShippingFree, orderBy, orderType, keyWord);
+            requestShop(minPrice, maxPrice, orderBy, orderType, saleType, tradeType, keyWord);
         }
     }
 
@@ -342,7 +417,7 @@ public class ShopFragment extends BaseFragment implements OnRefreshListener, OnL
     public void onRefresh(@NonNull RefreshLayout refreshLayout) {
         //下拉刷新
         pageOffset = 1;
-        requestShop(minPrice, maxPrice, isShippingFree, orderBy, orderType, keyWord);
+        requestShop(minPrice, maxPrice, orderBy, orderType, saleType, tradeType, keyWord);
     }
 
     /**

@@ -89,16 +89,7 @@ public class ShopListAdapter extends BaseQuickAdapter<HomeRecommendDataBean.Data
             helper.setText(R.id.tv_title, item.getProductName());
         }
         List<String> tags = new ArrayList<>();
-        if (item.getProductTags() != null && item.getProductTags().size() > 0) {
-
-            if (item.getProductTags().size() <= 2) {
-                tags = item.getProductTags();
-            } else {
-                for (int i = 0; i < 2; i++) {
-                    tags.add(item.getProductTags().get(i));
-                }
-            }
-        }
+        tags.add(item.getTradeType());
 
         RecyclerView recyclerView = helper.getView(R.id.recycler_tags);
         AutoLayoutManager autoLayoutManager = new AutoLayoutManager();

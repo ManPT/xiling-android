@@ -13,16 +13,21 @@ import android.widget.LinearLayout;
 import com.xiling.R;
 import com.xiling.ddui.bean.BrandBean;
 import com.xiling.ddui.bean.TopCategoryBean;
+import com.xiling.ddui.config.H5UrlConfig;
 import com.xiling.ddui.custom.ScreeningView;
+import com.xiling.ddui.custom.popupwindow.BrandShareDialog;
 import com.xiling.ddui.custom.popupwindow.ScreeningPopupWindow;
 import com.xiling.ddui.fragment.ShopFragment;
 import com.xiling.image.GlideUtils;
+import com.xiling.module.page.WebViewActivity;
 import com.xiling.shared.basic.BaseActivity;
 import com.xiling.shared.basic.BaseRequestListener;
 import com.xiling.shared.component.HeaderLayout;
 import com.xiling.shared.manager.APIManager;
 import com.xiling.shared.manager.ServiceManager;
 import com.xiling.shared.service.contract.IProductService;
+import com.xiling.shared.util.ShareUtils;
+import com.xiling.shared.util.ToastUtil;
 
 import java.util.ArrayList;
 
@@ -48,18 +53,14 @@ public class BrandActivity extends BaseActivity {
 
     private IProductService mProductService;
 
-    private String categoryId, brandId, brandName;
+    private String categoryId, brandId, brandName, headImage,cateGoryName;
     private String minPrice, maxPrice;
-    /**
-     * 是否包邮 0-非,1-是
-     */
-    private int isShippingFree = 0;
 
     /**
      * 排序属性 0-价格,1-上新,2-销量
      * 默认 上新
      */
-    private int orderBy = 1;
+    private int orderBy = 4;
 
     /**
      * 排序方式 0-降序(Desc), 1-升序(Asc)
@@ -67,8 +68,27 @@ public class BrandActivity extends BaseActivity {
     private int orderType = 0;
     private String keyWord = "";
 
+    /**
+     * 售卖类型(1-一件代发,2-批采)
+     */
+    private  String saleType = "";
+
+    /**
+     * 贸易类型(1-国内品牌-国内OEM,2-跨境保税,3-一般贸易,4-海外直邮)
+     */
+    private  String tradeType = "";
+
     private ShopFragment shopFragment;
     ScreeningPopupWindow screeningPopupWindow;
+
+
+    public static void jumpCategoryActivity(Context context, String categoryId,String cateGoryName, String headImage) {
+        Intent intent = new Intent(context, BrandActivity.class);
+        intent.putExtra("categoryId", categoryId);
+        intent.putExtra("cateGoryName", cateGoryName);
+        intent.putExtra("headImage", headImage);
+        context.startActivity(intent);
+    }
 
     public static void jumpBrandActivity(Context context, String categoryId, String brandId) {
         Intent intent = new Intent(context, BrandActivity.class);
@@ -81,6 +101,8 @@ public class BrandActivity extends BaseActivity {
         if (getIntent() != null) {
             categoryId = getIntent().getStringExtra("categoryId");
             brandId = getIntent().getStringExtra("brandId");
+            headImage = getIntent().getStringExtra("headImage");
+            cateGoryName = getIntent().getStringExtra("cateGoryName");
         }
     }
 
@@ -93,7 +115,21 @@ public class BrandActivity extends BaseActivity {
         mProductService = ServiceManager.getInstance().createService(IProductService.class);
         getIntentData();
         initView();
-        requestBrandData();
+
+        if (!TextUtils.isEmpty(cateGoryName)){
+            mHeaderLayout.setTitle(cateGoryName);
+        }else{
+            mHeaderLayout.setRightDrawable(R.mipmap.ic_share_gray);
+        }
+
+
+        if (TextUtils.isEmpty(headImage)) {
+            requestBrandData();
+        } else {
+            ivHead.setVisibility(View.VISIBLE);
+            GlideUtils.loadImage(context, ivHead, headImage);
+        }
+
     }
 
     private void initView() {
@@ -105,7 +141,7 @@ public class BrandActivity extends BaseActivity {
             }
         });
 
-        shopFragment = ShopFragment.newInstance(categoryId, "", brandId, minPrice, maxPrice, isShippingFree, orderBy, orderType, keyWord);
+        shopFragment = ShopFragment.newInstance(categoryId, brandId, minPrice, maxPrice, orderBy, orderType,saleType,tradeType, keyWord);
         getSupportFragmentManager().beginTransaction().add(R.id.frame_layout, shopFragment, "shopFragment").commit();
 
 
@@ -114,28 +150,36 @@ public class BrandActivity extends BaseActivity {
             public void onSort(int orderBy, int orderType) {
                 BrandActivity.this.orderBy = orderBy;
                 BrandActivity.this.orderType = orderType;
-                shopFragment.requestShopFill(minPrice, maxPrice, isShippingFree, orderBy, orderType, keyWord);
+                shopFragment.requestShopFill(minPrice, maxPrice, orderBy, orderType,saleType,tradeType, keyWord);
             }
 
             @Override
-            public void onFilter(int isShippingFree, String minPrice, String maxPrice) {
-                BrandActivity.this.isShippingFree = isShippingFree;
+            public void onFilter(String tradeType, String saleType, String minPrice, String maxPrice) {
                 BrandActivity.this.minPrice = minPrice;
                 BrandActivity.this.maxPrice = maxPrice;
-                shopFragment.requestShopFill(minPrice, maxPrice, isShippingFree, orderBy, orderType, keyWord);
+                BrandActivity.this.tradeType = tradeType;
+                BrandActivity.this.saleType = saleType;
+                shopFragment.requestShopFill(minPrice, maxPrice, orderBy, orderType,saleType,tradeType, keyWord);
             }
-        });
+    });
 
     }
 
     private void requestBrandData() {
         APIManager.startRequest(mProductService.getBrandDetail(brandId), new BaseRequestListener<BrandBean>(this) {
             @Override
-            public void onSuccess(BrandBean result) {
+            public void onSuccess(final BrandBean result) {
                 super.onSuccess(result);
                 if (result != null) {
                     brandName = result.getBrandName();
                     mHeaderLayout.setTitle(brandName);
+
+                    mHeaderLayout.setOnRightClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            new BrandShareDialog(BrandActivity.this, result).show();
+                        }
+                    });
                     if (!TextUtils.isEmpty(result.getIconUrl())) {
                         ivHead.setVisibility(View.VISIBLE);
                         GlideUtils.loadImage(context, ivHead, result.getIconUrl());

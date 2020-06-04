@@ -32,7 +32,9 @@ public class IndexBrandShopAdapter extends BaseQuickAdapter<IndexBrandBean.Index
                 GlideUtils.loadImage(mContext, (ImageView) helper.getView(R.id.iv_thumb), item.getThumbUrl());
             }
             helper.setVisible(R.id.tv_rmb, true);
-            if (!TextUtils.isEmpty(item.getProductName())) {
+            if (!TextUtils.isEmpty(item.getShortName())) {
+                helper.setText(R.id.tv_title, item.getShortName());
+            }else {
                 helper.setText(R.id.tv_title, item.getProductName());
             }
             //优惠价，需要根据用户等级展示不同价格

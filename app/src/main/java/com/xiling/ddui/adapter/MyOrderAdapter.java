@@ -11,6 +11,7 @@ import com.xiling.ddui.bean.DetailsBean;
 import com.xiling.ddui.bean.MyOrderDetailBean;
 import com.xiling.ddui.bean.XLOrderDetailsBean;
 import com.xiling.ddui.tools.NumberHandler;
+import com.xiling.shared.util.ClipboardUtil;
 import com.xiling.shared.util.ToastUtil;
 
 import java.util.List;
@@ -42,7 +43,12 @@ public class MyOrderAdapter extends BaseQuickAdapter<XLOrderDetailsBean, BaseVie
     protected void convert(BaseViewHolder helper, final XLOrderDetailsBean item) {
         helper.setText(R.id.order_number, "订单号: " + item.getOrderCode());
         helper.setText(R.id.tv_total_size, "共" + item.getTotalQuantity() + "件");
-        helper.setText(R.id.tv_price, "¥ " + NumberHandler.reservedDecimalFor2(item.getTotalPrice()));
+        helper.setText(R.id.tv_price, NumberHandler.reservedDecimalFor2(item.getTotalPrice()));
+        helper.setText(R.id.tv_warehouse_name,item.getStoreName());
+        helper.setText(R.id.tv_freight,"含运费¥"+ NumberHandler.reservedDecimalFor2(item.getFreight()));
+        helper.setText(R.id.tv_taxation,"税费¥"+ NumberHandler.reservedDecimalFor2(item.getTaxes()));
+
+        helper.setText(R.id.tv_user, item.getContactUsername() + " " + item.getContactPhone() + " " + item.getCreateTime());
         List<DetailsBean> details = item.getDetails();
 
         RecyclerView skuRecyclerView = helper.getView(R.id.itemRecyclerView);
@@ -84,6 +90,14 @@ public class MyOrderAdapter extends BaseQuickAdapter<XLOrderDetailsBean, BaseVie
                 if (onButtomItemClickListener != null) {
                     onButtomItemClickListener.onConfirmClickListerer(item);
                 }
+            }
+        });
+
+        helper.setOnClickListener(R.id.tv_btn_copy, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardUtil.setPrimaryClip(item.getOrderCode());
+                ToastUtil.success("复制成功");
             }
         });
 

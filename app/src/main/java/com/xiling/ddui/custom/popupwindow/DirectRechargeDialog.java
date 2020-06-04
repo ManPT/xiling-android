@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -14,20 +13,19 @@ import android.widget.TextView;
 
 import com.xiling.R;
 import com.xiling.ddui.activity.XLCashierActivity;
-import com.xiling.ddui.bean.SkuListBean;
+import com.xiling.ddui.bean.RechareConfigBean;
 import com.xiling.dduis.magnager.UserManager;
+import com.xiling.shared.basic.BaseRequestListener;
+import com.xiling.shared.manager.APIManager;
 import com.xiling.shared.manager.ServiceManager;
-import com.xiling.shared.service.contract.IPayService;
+import com.xiling.shared.service.INewUserService;
 import com.xiling.shared.util.ToastUtil;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.xiling.shared.service.contract.IPayService.PAY_TYPE_CHARGE_MONEY;
-import static com.xiling.shared.service.contract.IPayService.PAY_TYPE_WEEK_CARD;
 
 /**
  * @author 逄涛
@@ -37,7 +35,6 @@ public class DirectRechargeDialog extends Dialog {
     public static final String TYPE_VIP = "SVIP";
     public static final String TYPE_BLACK = "黑卡";
     Context mContext;
-    IPayService iPayService;
     @BindView(R.id.et_amount)
     TextView etAmount;
     @BindView(R.id.tv_account)
@@ -45,6 +42,9 @@ public class DirectRechargeDialog extends Dialog {
     @BindView(R.id.tv_recharging_instructions)
     TextView tvRechargingInstructions;
     String type;
+    INewUserService iNewUserService;
+    @BindView(R.id.tv_recharg_lable)
+    TextView tvRechargLable;
 
     public DirectRechargeDialog(@NonNull Context context, String type) {
         this(context, R.style.DDMDialog);
@@ -63,25 +63,54 @@ public class DirectRechargeDialog extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_direct_recharge);
         ButterKnife.bind(this);
-        iPayService = ServiceManager.getInstance().createService(IPayService.class);
+        iNewUserService = ServiceManager.getInstance().createService(INewUserService.class);
         initView();
     }
 
 
     private void initView() {
         initWindow();
-        switch (type) {
-            case TYPE_VIP:
-                etAmount.setText("16800");
-                tvAccount.setText("直升SVIP会员");
-                tvRechargingInstructions.setText("充值说明：\n 一次性充值货款16800直升VIP会员，充值的货款将直接存储 到个人账户中，后续下单订货可以直接使用余额支付 ");
-                break;
-            case TYPE_BLACK:
-                etAmount.setText("58000");
-                tvAccount.setText("直升黑卡会员");
-                tvRechargingInstructions.setText("充值说明：\n 一次性充值货款58000直升黑卡会员，充值的货款将直接存储 到个人账户中，后续下单订货可以直接使用余额支付 ");
-                break;
-        }
+
+        APIManager.startRequest(iNewUserService.getRechareConfig(), new BaseRequestListener<RechareConfigBean>() {
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                ToastUtil.error(e.getMessage());
+            }
+
+            @Override
+            public void onSuccess(RechareConfigBean result) {
+                super.onSuccess(result);
+
+                switch (type) {
+                    case TYPE_VIP:
+                        etAmount.setText(result.getSvipPrice() + "");
+                        if (!TextUtils.isEmpty(result.getSvipLable())) {
+                            tvRechargLable.setVisibility(View.VISIBLE);
+                            tvRechargLable.setText(result.getSvipLable());
+                        } else {
+                            tvRechargLable.setVisibility(View.GONE);
+                        }
+
+                        tvAccount.setText("直升SVIP会员");
+                        tvRechargingInstructions.setText("充值说明：\n 一次性充值货款16800直升VIP会员，充值的货款将直接存储 到个人账户中，后续下单订货可以直接使用余额支付 ");
+                        break;
+                    case TYPE_BLACK:
+                        etAmount.setText(result.getBlackPrice() + "");
+                        if (!TextUtils.isEmpty(result.getBlackLable())) {
+                            tvRechargLable.setVisibility(View.VISIBLE);
+                            tvRechargLable.setText(result.getBlackLable());
+                        } else {
+                            tvRechargLable.setVisibility(View.GONE);
+                        }
+
+                        tvAccount.setText("直升黑卡会员");
+                        tvRechargingInstructions.setText("充值说明：\n 一次性充值货款58000直升黑卡会员，充值的货款将直接存储 到个人账户中，后续下单订货可以直接使用余额支付 ");
+                        break;
+                }
+            }
+        });
+
 
     }
 
@@ -100,7 +129,7 @@ public class DirectRechargeDialog extends Dialog {
     private void recharge() {
         double amount = 0;
         try {
-            amount = Integer.valueOf(etAmount.getText().toString());
+            amount = Double.valueOf(etAmount.getText().toString());
             //跳转收银台
             XLCashierActivity.jumpCashierActivity(mContext, PAY_TYPE_CHARGE_MONEY, amount, 45 * 60 * 1000, (int) (amount * 100) + "");
         } catch (Exception e) {

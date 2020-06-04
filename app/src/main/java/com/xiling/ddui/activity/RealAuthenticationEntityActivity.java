@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.xiling.R;
 import com.xiling.ddui.bean.AddressListBean;
 import com.xiling.ddui.bean.TopCategoryBean;
+import com.xiling.ddui.custom.D3ialogTools;
 import com.xiling.ddui.custom.popupwindow.BusinessCategorySelectPopWindow;
 import com.xiling.ddui.manager.AddressPicker;
 import com.xiling.ddui.tools.DLog;
@@ -245,6 +246,23 @@ public class RealAuthenticationEntityActivity extends BaseActivity {
             public void onError(Throwable e) {
                 super.onError(e);
                 ToastUtil.error(e.getMessage());
+
+            }
+        });
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        D3ialogTools.showAlertDialog(context, "还未提交认证，确认退出吗?", "退出", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        }, "取消", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
             }
         });

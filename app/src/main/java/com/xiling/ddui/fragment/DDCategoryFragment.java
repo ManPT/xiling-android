@@ -2,41 +2,15 @@ package com.xiling.ddui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
-import com.sobot.chat.utils.ScreenUtils;
+import com.flyco.tablayout.SlidingTabLayout;
 import com.xiling.R;
-import com.xiling.ddui.activity.BrandActivity;
-import com.xiling.ddui.activity.CategorySecondActivity;
-import com.xiling.ddui.adapter.CategoryAdapter;
-import com.xiling.ddui.adapter.CategoryBrandAdapter;
-import com.xiling.ddui.adapter.CategoryNavigationAdapter;
-import com.xiling.ddui.bean.SecondCategoryBean;
-import com.xiling.ddui.bean.TopCategoryBean;
-import com.xiling.dduis.custom.divider.SpacesItemDecoration;
-import com.xiling.image.GlideUtils;
 import com.xiling.module.search.SearchActivity;
 import com.xiling.shared.basic.BaseFragment;
-import com.xiling.shared.basic.BaseRequestListener;
-import com.xiling.shared.manager.APIManager;
-import com.xiling.shared.manager.ServiceManager;
-import com.xiling.shared.service.contract.IProductService;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,40 +25,14 @@ import butterknife.Unbinder;
  */
 public class DDCategoryFragment extends BaseFragment {
 
-    @BindView(R.id.tv_search)
-    TextView mTvSearch;
-
-    @BindView(R.id.rv_category_nav)
-    RecyclerView mRvCategoryNav;
-
-    @BindView(R.id.rv_category)
-    RecyclerView rvCategory;
-
-    @BindView(R.id.smart_refresh_layout)
-    SmartRefreshLayout mSmartRefreshLayout;
-
-    ArrayList<TopCategoryBean> topCategoryList;
-    ArrayList<SecondCategoryBean.SecondCategoryListBean> secondCategoryList;
-    ArrayList<SecondCategoryBean.BrandBeanListBean> brandBeanListBeanList;
-
+    @BindView(R.id.sliding_tab)
+    SlidingTabLayout slidingTab;
+    @BindView(R.id.viewpager_shop)
+    ViewPager viewpagerShop;
     Unbinder unbinder;
-    @BindView(R.id.sdv_category_banner)
-    ImageView sdvCategoryBanner;
-    @BindView(R.id.tv_category)
-    TextView tvCategory;
-    @BindView(R.id.ll_brand)
-    LinearLayout llBrand;
-    @BindView(R.id.rv_category_brand)
-    RecyclerView rvCategoryBrand;
-
-    LinearLayoutManager topLayoutMainager;
-
-    private IProductService mProductService;
-    private CategoryNavigationAdapter mCategoryNavigationAdapter;
-    private CategoryAdapter mCategoryAdapter;
-    private CategoryBrandAdapter categoryBrandAdapter;
-    private int childPosition = 0;
-
+    private List<String> childNames = new ArrayList<>();
+    private ArrayList<Fragment> fragments = new ArrayList<>();
+    Fragment currentFragment;
     public DDCategoryFragment() {
     }
 
@@ -96,7 +44,7 @@ public class DDCategoryFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mProductService = ServiceManager.getInstance().createService(IProductService.class);
+
     }
 
     @Override
@@ -104,159 +52,47 @@ public class DDCategoryFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ddcategory, container, false);
         unbinder = ButterKnife.bind(this, view);
+
         initView();
+
         return view;
     }
 
-    private void initView() {
+    private void initView(){
+        childNames.clear();
+        childNames.add("分类");
+        childNames.add("品牌");
 
-        mCategoryNavigationAdapter = new CategoryNavigationAdapter();
-        mCategoryNavigationAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+        fragments.clear();
+        fragments.add(new ClassificationFragment());
+        fragments.add(new BrandFragemnt());
+        currentFragment = fragments.get(0);
+
+        slidingTab.setViewPager(viewpagerShop, childNames.toArray(new String[childNames.size()]), getActivity(), fragments);
+
+        viewpagerShop.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                mCategoryNavigationAdapter.setmActiveIndex(position);
-                childPosition = position;
-                if (topCategoryList.size() > childPosition) {
-                    getSecondCategory(topCategoryList.get(childPosition).getCategoryId());
-                }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
             }
-        });
-        topLayoutMainager = new LinearLayoutManager(getContext()){
+
             @Override
-            public boolean canScrollVertically() {
-                return false;
+            public void onPageSelected(int position) {
+                currentFragment = fragments.get(position);
             }
-        };
-        mRvCategoryNav.setLayoutManager(topLayoutMainager);
-        mRvCategoryNav.setAdapter(mCategoryNavigationAdapter);
-
-
-        mCategoryAdapter = new CategoryAdapter();
-        rvCategory.addItemDecoration(new SpacesItemDecoration(ScreenUtils.dip2px(getActivity(), 8), ScreenUtils.dip2px(getActivity(), 10)));
-        rvCategory.setAdapter(mCategoryAdapter);
-        rvCategory.setLayoutManager(new GridLayoutManager(mContext, 3));
-
-        mCategoryAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                if (topCategoryList != null && secondCategoryList != null) {
-                    String parentId = topCategoryList.get(childPosition).getCategoryId();
-                    String childId = secondCategoryList.get(position).getCategoryId();
-                    CategorySecondActivity.jumpCategorySecondActivity(mContext, parentId, childId,topCategoryList.get(childPosition).getCategoryName());
-                }
-            }
-        });
-
-        categoryBrandAdapter = new CategoryBrandAdapter();
-        rvCategoryBrand.addItemDecoration(new SpacesItemDecoration(ScreenUtils.dip2px(getActivity(), 8), ScreenUtils.dip2px(getActivity(), 10)));
-        rvCategoryBrand.setAdapter(categoryBrandAdapter);
-        rvCategoryBrand.setLayoutManager(new GridLayoutManager(mContext, 3){
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        });
-
-        categoryBrandAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 
             @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                if (topCategoryList != null && brandBeanListBeanList != null) {
-                    BrandActivity.jumpBrandActivity(mContext, topCategoryList.get(childPosition).getCategoryId(),
-                            brandBeanListBeanList.get(position).getBrandId());
-                }
+            public void onPageScrollStateChanged(int state) {
 
             }
         });
-
-
-        mSmartRefreshLayout.setEnableLoadMore(false);
-        mSmartRefreshLayout.setEnableRefresh(true);
-        mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                if (topCategoryList.size() > childPosition) {
-                    getSecondCategory(topCategoryList.get(childPosition).getCategoryId());
-                }
-            }
-        });
-
 
     }
 
 
-    /**
-     * 获取一级分类列表（左侧）
-     */
-    private void getTopCategory() {
-        APIManager.startRequest(mProductService.getTopCategory(), new BaseRequestListener<ArrayList<TopCategoryBean>>(getActivity()) {
-            @Override
-            public void onSuccess(ArrayList<TopCategoryBean> result) {
-                super.onSuccess(result);
-                topCategoryList = result;
-                mCategoryNavigationAdapter.setNewData(result);
-                childPosition = mCategoryNavigationAdapter.getmActiveIndex();
-
-                if (topCategoryList.size() > childPosition) {
-                    getSecondCategory(topCategoryList.get(childPosition).getCategoryId());
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                super.onError(e);
-            }
-        });
-    }
-
-    /**
-     * 获取二级分类和品牌
-     *
-     * @param nodeId
-     */
-    private void getSecondCategory(String nodeId) {
-        APIManager.startRequest(mProductService.getSecondCategory(nodeId), new BaseRequestListener<SecondCategoryBean>(getActivity()) {
-            @Override
-            public void onStart() {
-            }
-
-            @Override
-            public void onSuccess(SecondCategoryBean result) {
-                super.onSuccess(result);
-                try {
-                    mSmartRefreshLayout.finishRefresh();
-                    if (result != null) {
-                        GlideUtils.loadImage(mContext, sdvCategoryBanner, topCategoryList.get(childPosition).getBannerUrl());
-                        tvCategory.setText(topCategoryList.get(childPosition).getCategoryName());
-                        if (result.getSecondCategoryList() != null) {
-                            secondCategoryList = result.getSecondCategoryList();
-                            mCategoryAdapter.setNewData(result.getSecondCategoryList());
-                        } else {
-                            mCategoryAdapter.setNewData(new ArrayList<SecondCategoryBean.SecondCategoryListBean>());
-                        }
-
-                        if (result.getBrandBeanList() != null && result.getBrandBeanList().size() > 0) {
-                            llBrand.setVisibility(View.VISIBLE);
-                        } else {
-                            llBrand.setVisibility(View.GONE);
-                        }
-                        brandBeanListBeanList = result.getBrandBeanList();
-                        categoryBrandAdapter.setNewData(brandBeanListBeanList);
-                    }
 
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onError(Throwable e) {
-                super.onError(e);
-                mSmartRefreshLayout.finishRefresh();
-            }
-        });
-    }
 
     @OnClick({R.id.tv_search})
     void onClickSearch() {
@@ -267,7 +103,7 @@ public class DDCategoryFragment extends BaseFragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && isAdded() && getContext() != null) {
-            getTopCategory();
+            currentFragment.setUserVisibleHint(isVisibleToUser);
         }
     }
 

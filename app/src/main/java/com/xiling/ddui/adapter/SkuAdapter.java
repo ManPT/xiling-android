@@ -26,7 +26,7 @@ public class SkuAdapter extends BaseQuickAdapter<OrderDetailBean.StoresBean.Prod
         helper.setText(R.id.tv_quantity, "x " + item.getQuantity());
         helper.setText(R.id.tv_price, "¥" + NumberHandler.reservedDecimalFor2(item.getRetailPrice()));
         NumberHandler.setPriceText(item.getPrice(), (TextView) helper.getView(R.id.tv_discount_price), (TextView) helper.getView(R.id.tv_discount_price_decimal));
-        if (item.getIsCross() == 1) {
+       /* if (item.getIsCross() == 1) {
             helper.setVisible(R.id.tv_taxation, true);
             if (item.getTotalTaxes() > 0) {
                 helper.setText(R.id.tv_taxation, "进口税¥" + NumberHandler.reservedDecimalFor2(item.getTotalTaxes()));
@@ -35,7 +35,7 @@ public class SkuAdapter extends BaseQuickAdapter<OrderDetailBean.StoresBean.Prod
             }
         } else {
             helper.setVisible(R.id.tv_taxation, false);
-        }
+        }*/
 
 
     }

@@ -64,6 +64,12 @@ public class SkuSelectorDialog extends Dialog {
     protected ProductNewBean mSpuInfo;
     @BindView(R.id.tv_stock)
     TextView tvStock;
+    @BindView(R.id.tv_step)
+    TextView tvStep;
+    @BindView(R.id.tv_freight)
+    TextView tvFreight;
+    @BindView(R.id.iv_rate)
+    TextView ivRate;
     private OnSelectListener mSelectListener;
     List<ProductNewBean.SkusBean> skusBeanList;
     private ProductNewBean.SkusBean skuBean;
@@ -153,20 +159,43 @@ public class SkuSelectorDialog extends Dialog {
         }
     }
 
-    private void upDateSku() {
+    private void upDateSku(boolean isField) {
+        ivRate.setBackgroundResource(UserManager.getInstance().getDiscountIconForUser(true));
         if (skuBean != null) {
             setSkuName(skuBean.getPropertyValues());
             GlideUtils.loadImage(getContext(), mThumbIv, skuBean.getThumbUrlForShopNow());
             //优惠价，需要根据用户等级展示不同价格
             NumberHandler.setPriceText(UserManager.getInstance().getPriceForUser(skuBean), tvDiscountPrice, tvDiscountPriceDecimal);
+
+            String mStatus = ShopUtils.checkShopStatus(skuBean.getStatus(), skuBean.getStock());
             //售价
             tvMinPrice.setText("¥" + NumberHandler.reservedDecimalFor2(skuBean.getRetailPrice()));
             //划线价
             tvMinMarketPrice.setText("¥" + NumberHandler.reservedDecimalFor2(skuBean.getMarketPrice()));
-            mNumberField.setLimit(skuBean.getStep(), skuBean.getStock());
+            if (!isField) {
+                mNumberField.setLimit(skuBean.getStep(), skuBean.getStock());
+                mNumberField.setValue(skuBean.getStep());
+                if (skuBean.getStep() > 1) {
+                    tvStep.setVisibility(View.VISIBLE);
+                    tvStep.setText("批采商品数量必须为" + skuBean.getStep() + "的倍数");
+                } else {
+                    tvStep.setVisibility(View.GONE);
+                }
+
+                if (skuBean.getStep() > 1 && skuBean.getShowShippingFree() > 0) {
+                    tvFreight.setVisibility(View.VISIBLE);
+                    tvFreight.setText("含运费：¥" + NumberHandler.reservedDecimalFor2(skuBean.getShowShippingFree()));
+                } else {
+                    tvFreight.setVisibility(View.GONE);
+                }
+
+
+            }
+
             tvStock.setText("库存" + skuBean.getStock() + "件");
         } else {
             setSkuName("");
+            tvStep.setVisibility(View.GONE);
             GlideUtils.loadImage(getContext(), mThumbIv, mSpuInfo.getThumbUrl());
             //优惠价，需要根据用户等级展示不同价格
             NumberHandler.setPriceText(UserManager.getInstance().getPriceForUser(mSpuInfo), tvDiscountPrice, tvDiscountPriceDecimal);
@@ -175,7 +204,9 @@ public class SkuSelectorDialog extends Dialog {
             //划线价
             tvMinMarketPrice.setText("¥" + NumberHandler.reservedDecimalFor2(mSpuInfo.getMinMarketPrice()));
             tvStock.setText("");
-            mNumberField.setLimit(0, 0);
+            tvFreight.setVisibility(View.GONE);
+            mNumberField.setLimit(1, 1);
+            mNumberField.setNull();
         }
     }
 
@@ -276,14 +307,14 @@ public class SkuSelectorDialog extends Dialog {
             public void changed(int value) {
                 if (selectCount != value && value > 0) {
                     selectCount = value;
-                    upDateSku();
+                    upDateSku(true);
                 }
             }
         });
         tvMinMarketPrice.getPaint().setAntiAlias(true);//抗锯齿
         tvMinMarketPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         initRecyclerView();
-        upDateSku();
+        upDateSku(false);
         if (skuBean != null) {
             selectCount = skuBean.getStep();
         }
@@ -304,7 +335,7 @@ public class SkuSelectorDialog extends Dialog {
              * 如果是单规格，默认选中
              */
             if (parentList.size() == 1) {
-                if (parentList.get(0).getPropertyValues().size() > 0) {
+                if (parentList.get(0).getPropertyValues().size() == 1) {
                     parentAdapter.setSelectChildId(parentList.get(0).getPropertyValues().get(0).getPropertyValueId());
                     selectMap.put(parentList.get(0).getPropertyId(), parentList.get(0).getPropertyValues().get(0));
                     matchSkuBean();
@@ -328,7 +359,7 @@ public class SkuSelectorDialog extends Dialog {
                         checkSkuBean(childBean.getPropertyValueId(), false);
                     }
                     matchSkuBean();
-                    upDateSku();
+                    upDateSku(false);
                     parentAdapter.notifyDataSetChanged();
 
 
@@ -344,7 +375,7 @@ public class SkuSelectorDialog extends Dialog {
     @OnClick(R.id.tv_close)
     protected void onClose() {
         if (skuBean != null && mSelectListener != null) {
-            mSelectListener.onClose(skuBean.getPropertyValues());
+            mSelectListener.onClose(skuBean);
         }
         dismiss();
     }
@@ -364,21 +395,21 @@ public class SkuSelectorDialog extends Dialog {
         switch (view.getId()) {
             case R.id.addToCartBtn:
                 if (mSelectListener != null) {
-                    mSelectListener.joinShopCart(skuBean.getSkuId(), skuBean.getPropertyValues(), selectCount);
+                    mSelectListener.joinShopCart(skuBean.getSkuId(), skuBean, selectCount);
                 }
                 dismiss();
                 break;
             case R.id.buyNowBtn:
                 if (mSelectListener != null) {
-                    mSelectListener.buyItNow(skuBean.getSkuId(), skuBean.getPropertyValues(), selectCount);
+                    mSelectListener.buyItNow(skuBean.getSkuId(), skuBean, selectCount);
                 }
                 dismiss();
                 break;
             case R.id.confirmBtn:
                 if (mAction == ACTION_CARD) {
-                    mSelectListener.joinShopCart(skuBean.getSkuId(), skuBean.getPropertyValues(), selectCount);
+                    mSelectListener.joinShopCart(skuBean.getSkuId(), skuBean, selectCount);
                 } else if (mAction == ACTION_SHOPPING) {
-                    mSelectListener.buyItNow(skuBean.getSkuId(), skuBean.getPropertyValues(), selectCount);
+                    mSelectListener.buyItNow(skuBean.getSkuId(), skuBean, selectCount);
                 }
                 dismiss();
                 break;
@@ -387,13 +418,13 @@ public class SkuSelectorDialog extends Dialog {
 
 
     public interface OnSelectListener {
-        void onClose(String propertyValue);
+        void onClose(ProductNewBean.SkusBean skusBean);
 
         //加入购物车
-        void joinShopCart(String skuId, String propertyValue, int selectCount);
+        void joinShopCart(String skuId, ProductNewBean.SkusBean skusBean, int selectCount);
 
         //立即购买
-        void buyItNow(String propertyIds, String propertyValue, int selectCount);
+        void buyItNow(String propertyIds, ProductNewBean.SkusBean skusBean, int selectCount);
     }
 
 }

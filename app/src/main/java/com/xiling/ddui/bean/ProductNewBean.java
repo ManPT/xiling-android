@@ -49,6 +49,10 @@ public class ProductNewBean {
     private List<String> productTags;
     private List<PropertiesBean> properties;
     private List<SkusBean> skus;
+    private String tradeType;
+    private String saleType;
+    private String countryName;
+    private String countryIcon;
 
     public int getIsCross() {
         return isCross;
@@ -237,6 +241,38 @@ public class ProductNewBean {
         this.images = images;
     }
 
+    public String getTradeType() {
+        return tradeType;
+    }
+
+    public void setTradeType(String tradeType) {
+        this.tradeType = tradeType;
+    }
+
+    public String getSaleType() {
+        return saleType;
+    }
+
+    public void setSaleType(String saleType) {
+        this.saleType = saleType;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
+    }
+
+    public String getCountryIcon() {
+        return countryIcon;
+    }
+
+    public void setCountryIcon(String countryIcon) {
+        this.countryIcon = countryIcon;
+    }
+
     public static class PropertiesBean {
         /**
          * propertyId : 70ea853b8aa34ccaba3c19687b5a85ce
@@ -355,6 +391,12 @@ public class ProductNewBean {
         private int costPrice;
         private double level10Price;
         private double level20Price;
+
+        public double getShowShippingFree() {
+            return showShippingFree/100;
+        }
+
+        private double showShippingFree;
 
         public double getRetailTax() {
             return retailTax / 100;

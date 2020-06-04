@@ -1,5 +1,6 @@
 package com.xiling.ddui.adapter;
 
+import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,7 +24,13 @@ public class SkuOrderAdapter extends BaseQuickAdapter<DetailsBean, BaseViewHolde
     protected void convert(BaseViewHolder helper, DetailsBean item) {
         GlideUtils.loadImage(mContext, (ImageView) helper.getView(R.id.iv_icon), item.getProductImage());
         helper.setText(R.id.tv_product_name, item.getSkuName());
-        helper.setText(R.id.tv_product_des, item.getProductSpecification());
+        if (!TextUtils.isEmpty(item.getProductSpecification())) {
+            helper.setText(R.id.tv_product_des, item.getProductSpecification());
+        } else {
+            helper.setText(R.id.tv_product_des, item.getProperties());
+        }
+      //  helper.setText(R.id.tv_freight, "含运费¥" + NumberHandler.reservedDecimalFor2(item.ge()));
+       // helper.setText(R.id.tv_taxation, "税费¥" + NumberHandler.reservedDecimalFor2(item.ge()));
         helper.setText(R.id.tv_quantity, "x " + item.getQuantity());
         helper.setText(R.id.tv_price, "¥" + NumberHandler.reservedDecimalFor2(item.getRetailPrice()));
         NumberHandler.setPriceText(item.getPrice(), (TextView) helper.getView(R.id.tv_discount_price), (TextView) helper.getView(R.id.tv_discount_price_decimal));

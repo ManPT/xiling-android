@@ -155,6 +155,86 @@ public class ShareUtils {
         }).withMedia(web).share();
     }
 
+    public static void share(Activity activity, String title, String desc, String logoUrl, String link,SHARE_MEDIA way, final UMShareListener listener) {
+        UMWeb web = new UMWeb(link);
+        web.setTitle(title);
+        web.setDescription(desc);
+        web.setThumb(new UMImage(activity, logoUrl));
+//        showLoading();
+        new ShareAction(activity).setPlatform(way).setCallback(new UMShareListener() {
+            @Override
+            public void onStart(SHARE_MEDIA share_media) {
+                Log.e("err", "start");
+            }
+
+            @Override
+            public void onResult(SHARE_MEDIA share_media) {
+                Log.e("err", "result");
+//                hideLoading();
+                if (listener != null) {
+                    listener.onResult(share_media);
+                }
+            }
+
+            @Override
+            public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+                Log.e("err", "err" + throwable.getMessage());
+//                hideLoading();
+                if (listener != null) {
+                    listener.onError(share_media, throwable);
+                }
+            }
+
+            @Override
+            public void onCancel(SHARE_MEDIA share_media) {
+//                hideLoading();
+                if (listener != null) {
+                    listener.onCancel(share_media);
+                }
+            }
+        }).withMedia(web).share();
+    }
+
+    public static void share(Activity activity, String title, String desc, int logoUrl, String link,SHARE_MEDIA way, final UMShareListener listener) {
+        UMWeb web = new UMWeb(link);
+        web.setTitle(title);
+        web.setDescription(desc);
+        web.setThumb(new UMImage(activity, logoUrl));
+//        showLoading();
+        new ShareAction(activity).setPlatform(way).setCallback(new UMShareListener() {
+            @Override
+            public void onStart(SHARE_MEDIA share_media) {
+                Log.e("err", "start");
+            }
+
+            @Override
+            public void onResult(SHARE_MEDIA share_media) {
+                Log.e("err", "result");
+//                hideLoading();
+                if (listener != null) {
+                    listener.onResult(share_media);
+                }
+            }
+
+            @Override
+            public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+                Log.e("err", "err" + throwable.getMessage());
+//                hideLoading();
+                if (listener != null) {
+                    listener.onError(share_media, throwable);
+                }
+            }
+
+            @Override
+            public void onCancel(SHARE_MEDIA share_media) {
+//                hideLoading();
+                if (listener != null) {
+                    listener.onCancel(share_media);
+                }
+            }
+        }).withMedia(web).share();
+    }
+
     /**
      * 分享图片到指定平台
      */

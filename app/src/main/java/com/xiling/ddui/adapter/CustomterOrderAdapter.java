@@ -39,6 +39,11 @@ public class CustomterOrderAdapter extends BaseQuickAdapter<CustomerOrderBean.Or
     protected void convert(BaseViewHolder helper, final CustomerOrderBean.OrderDetailsBean item) {
         helper.setText(R.id.order_number, "订单号: " + item.getOrderCode());
         helper.setText(R.id.tv_price, "¥ " + NumberHandler.reservedDecimalFor2(item.getReceiptsIndices()));
+
+
+        helper.setText(R.id.tv_freight, "含运费¥" + NumberHandler.reservedDecimalFor2(item.getFreight()));
+        helper.setText(R.id.tv_taxation, "税费¥" + NumberHandler.reservedDecimalFor2(item.getTotalTaxes()));
+        helper.setText(R.id.tv_total_number,"共计"+item.getTotalQuantoity()+"件");
         List<DetailsBean> details = item.getClientOrderDetailList();
 
         RecyclerView skuRecyclerView = helper.getView(R.id.itemRecyclerView);

@@ -23,6 +23,12 @@ public class ClentOrderDetailBean {
     private String nickName;
     private double receiptsIndices;
     private String createDate;
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    private String storeName;
     private String payDate;
     private String receivedDate;
     private List<DetailsBean> clientOrderDetailList;

@@ -3,6 +3,8 @@ package com.xiling.shared.service.contract;
 
 import com.xiling.ddui.bean.CategoryBean;
 import com.xiling.ddui.bean.IndexBrandBean;
+import com.xiling.ddui.bean.IndexCategoryBean;
+import com.xiling.ddui.bean.NationalPavilionBean;
 import com.xiling.dduis.bean.DDHomeDataBean;
 import com.xiling.dduis.bean.DDHomeRushDataBean;
 import com.xiling.dduis.bean.DDProductPageBean;
@@ -33,6 +35,23 @@ public interface DDHomeService {
     @Headers("Content-Type: application/json;charset=UTF-8")
     @GET("home/index")
     Observable<RequestResult<HomeDataBean>> getHomeData();
+
+
+    /**
+     * 获取国家馆列表
+     */
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    @GET("national-pavilion/list")
+    Observable<RequestResult<List<NationalPavilionBean>>> getNationalPavilionList();
+
+    /**
+     * 首页分类
+     */
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    @GET("home/getIndexCategory")
+    Observable<RequestResult<List<IndexCategoryBean>>> getIndexCategory();
+
+
 
     /**
      * 获取首页推荐数据

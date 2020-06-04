@@ -1,6 +1,7 @@
 package com.xiling.shared.service.contract;
 
 import com.xiling.ddui.bean.BrandBean;
+import com.xiling.ddui.bean.BrandListBean;
 import com.xiling.ddui.bean.CategoryBean;
 import com.xiling.ddui.bean.DDSkuListBean;
 import com.xiling.ddui.bean.ListResultBean;
@@ -47,6 +48,10 @@ public interface IProductService {
     @GET("product/getProductTax")
     Observable<RequestResult<Double>> getProductTax(@Query("spuId") String spuId);
 
+    // 品牌列表--电话簿
+    @GET("brand/list")
+    Observable<RequestResult<BrandListBean>> getBrandList();
+
     // 一级分类接口
     @GET("home/getTopCategory")
     Observable<RequestResult<ArrayList<TopCategoryBean>>> getTopCategory();
@@ -72,6 +77,13 @@ public interface IProductService {
     @FormUrlEncoded
     @POST("secondLevel/getBrandDetail")
     Observable<RequestResult<BrandBean>> getBrandDetail(@Field("brandId") String brandId);
+
+    // 获取指定国家馆对应的品牌馆列表
+    @GET("national-pavilion/detail")
+    Observable<RequestResult<List<BrandListBean.GroupsBean.BrandsBean>>> getNationalPavilionDetail(@Query("id") String brandId);
+
+
+
 
     //  获取商品详情（新）
     @GET("product/spuDetail")

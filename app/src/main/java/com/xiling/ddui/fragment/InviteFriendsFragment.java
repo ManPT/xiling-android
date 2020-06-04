@@ -114,7 +114,13 @@ public class InviteFriendsFragment extends BaseFragment {
      */
     public void shareWechat(final SHARE_MEDIA way) {
         if (way != null) {
-            ShareUtils.shareTo3rdPlatform(getActivity(), parentView, way, "friend");
+           // ShareUtils.shareTo3rdPlatform(getActivity(), parentView, way, "friend");
+            if (index == 0){
+                ShareUtils.share(getActivity(),"精彩全球优质好货",UserManager.getInstance().getUser().getNickName()+"邀请您注册喜领商城",R.mipmap.ic_launcher,shareUrl,way,null);
+            }else if (index == 1){
+                ShareUtils.share(getActivity(),"汇聚全球优质品牌",UserManager.getInstance().getUser().getNickName()+"邀请您下载喜领APP",R.mipmap.ic_launcher,shareUrl,way,null);
+            }
+
         } else {
             ShareUtils.saveDiskShare(getActivity(), parentView, "");
         }

@@ -20,10 +20,10 @@ public class MineServiceAdapter extends BaseQuickAdapter<MineServiceAdapter.Serv
         helper.setBackgroundRes(R.id.iv_icon,item.url);
         helper.setText(R.id.tv_title,item.title);
         if (item.isClick){
-            helper.setAlpha(R.id.iv_icon,100);
+            helper.getView(R.id.iv_icon).getBackground().setAlpha(255);
             helper.setTextColor(R.id.tv_title, Color.parseColor("#282828"));
         }else{
-            helper.setAlpha(R.id.iv_icon,50);
+            helper.getView(R.id.iv_icon).getBackground().setAlpha(125);
             helper.setTextColor(R.id.tv_title, Color.parseColor("#939393"));
         }
 

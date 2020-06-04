@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.utils.SPUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.felipecsl.gifimageview.library.GifImageView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -26,11 +27,14 @@ import com.sobot.chat.utils.ScreenUtils;
 import com.xiling.BuildConfig;
 import com.xiling.R;
 import com.xiling.ddui.activity.CategorySecondActivity;
+import com.xiling.ddui.activity.NationalPavilionActivity;
 import com.xiling.ddui.activity.XLMemberCenterActivity;
 import com.xiling.ddui.activity.XLNewsGroupActivity;
+import com.xiling.ddui.adapter.IndexCategoryAdapter;
 import com.xiling.ddui.adapter.IndexSelectedBrandAdapter;
 import com.xiling.ddui.bean.IndexBrandBean;
-import com.xiling.ddui.custom.D3ialogTools;
+import com.xiling.ddui.bean.IndexCategoryBean;
+import com.xiling.ddui.bean.NationalPavilionBean;
 import com.xiling.ddui.custom.ServicePolicyDialog;
 import com.xiling.ddui.custom.popupwindow.NewcomerDiscountDialog;
 import com.xiling.ddui.manager.AutoClickManager;
@@ -38,7 +42,6 @@ import com.xiling.ddui.manager.XLMessageManager;
 import com.xiling.ddui.tools.DLog;
 import com.xiling.ddui.view.RLoopRecyclerView;
 import com.xiling.ddui.view.RPagerSnapHelper;
-import com.xiling.dduis.adapter.HomeActivityAdapter;
 import com.xiling.dduis.adapter.HomeBrandAdapter;
 import com.xiling.dduis.adapter.HomeHotAdapter;
 import com.xiling.dduis.adapter.HomeTabAdapter;
@@ -56,11 +59,13 @@ import com.xiling.shared.basic.BaseFragment;
 import com.xiling.shared.basic.BaseRequestListener;
 import com.xiling.shared.bean.MyStatus;
 import com.xiling.shared.bean.NewUserBean;
-import com.xiling.shared.bean.User;
+import com.xiling.shared.bean.Splash;
 import com.xiling.shared.bean.event.EventMessage;
 import com.xiling.shared.manager.APIManager;
 import com.xiling.shared.manager.ServiceManager;
 import com.xiling.shared.service.contract.DDHomeService;
+import com.xiling.shared.service.contract.IAdService;
+import com.xiling.shared.util.ToastUtil;
 import com.youth.banner.Banner;
 import com.youth.banner.listener.OnBannerListener;
 
@@ -106,14 +111,11 @@ public class DDHomeMainFragment extends BaseFragment implements OnRefreshListene
     List<HomeDataBean.TabListBean> tabListBeanList = new ArrayList<>();
     HomeTabAdapter homeTabAdapter;
 
-    @BindView(R.id.recyclerView_activity)
-    RecyclerView recyclerViewActivity;
     List<HomeDataBean.ActivityListBean> activityBeanList = new ArrayList<>();
-    HomeActivityAdapter activityAdapter;
 
     @BindView(R.id.recyclerView_brand)
     RLoopRecyclerView recyclerViewBrand;
-    List<HomeDataBean.BrandHotSaleListBean> brandList = new ArrayList<>();
+    ArrayList<NationalPavilionBean> brandList = new ArrayList<>();
     HomeBrandAdapter brandAdapter;
     int brandPosition = 1, brandSize = 0;
     @BindView(R.id.tv_brandPosition)
@@ -146,9 +148,20 @@ public class DDHomeMainFragment extends BaseFragment implements OnRefreshListene
     RecyclerView recyclerViewSelectedBrand;
     @BindView(R.id.ll_index_selected_brand)
     LinearLayout llIndexSelectedBrand;
+    @BindView(R.id.iv_activity1)
+    GifImageView ivActivity1;
+    @BindView(R.id.iv_activity2)
+    GifImageView ivActivity2;
+    @BindView(R.id.iv_activity3)
+    GifImageView ivActivity3;
+    @BindView(R.id.recyclerView_category)
+    RecyclerView recyclerViewCategory;
+    @BindView(R.id.ll_index_category)
+    LinearLayout llIndexCategory;
     private LinearLayoutManager bannerLayoutManager;
 
     IndexSelectedBrandAdapter indexSelectedBrandAdapter;
+    IndexCategoryAdapter indexCategoryAdapter;
 
     @Nullable
     @Override
@@ -161,11 +174,27 @@ public class DDHomeMainFragment extends BaseFragment implements OnRefreshListene
         unbinder = ButterKnife.bind(this, view);
         initView();
         checkUserInfo();
+
         realAuthForVip();
         showNewComerDialog();
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        ivActivity1.startAnimation();
+        ivActivity2.startAnimation();
+        ivActivity3.startAnimation();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ivActivity1.stopAnimation();
+        ivActivity2.stopAnimation();
+        ivActivity3.stopAnimation();
+    }
 
     /**
      * Vip用户，第一次进入app，提示账户认证
@@ -189,11 +218,28 @@ public class DDHomeMainFragment extends BaseFragment implements OnRefreshListene
     private void showNewComerDialog() {
         SPUtils spUtils = new SPUtils(SplashActivity.class.getName() + "_" + BuildConfig.VERSION_NAME);
         if (!spUtils.getBoolean("oneStart")) {
-     /*       NewcomerDiscountDialog newcomerDiscountDialog = new NewcomerDiscountDialog(mContext);
-            newcomerDiscountDialog.show();*/
-            new ServicePolicyDialog(mContext).show();
+            // new ServicePolicyDialog(mContext).show();
             spUtils.putBoolean("oneStart", true);
         }
+
+        IAdService adService = ServiceManager.getInstance().createService(IAdService.class);
+        APIManager.startRequest(adService.getSplashAd(8), new BaseRequestListener<List<Splash>>() {
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+
+            }
+
+            @Override
+            public void onSuccess(List<Splash> result) {
+                super.onSuccess(result);
+                if (result.size() > 0) {
+                    NewcomerDiscountDialog newcomerDiscountDialog = new NewcomerDiscountDialog(mContext, result.get(0));
+                    newcomerDiscountDialog.show();
+                }
+
+            }
+        });
 
 
     }
@@ -214,12 +260,6 @@ public class DDHomeMainFragment extends BaseFragment implements OnRefreshListene
         recyclerViewTab.setLayoutManager(tabLayoutManager);
         homeTabAdapter = new HomeTabAdapter(R.layout.item_home_tab, tabListBeanList);
         recyclerViewTab.setAdapter(homeTabAdapter);
-
-        LinearLayoutManager activityLayoutManager = new LinearLayoutManager(getActivity());
-        activityLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        recyclerViewActivity.setLayoutManager(activityLayoutManager);
-        activityAdapter = new HomeActivityAdapter(R.layout.item_home_activity, activityBeanList);
-        recyclerViewActivity.setAdapter(activityAdapter);
 
         bannerLayoutManager = new LinearLayoutManager(getActivity());
         bannerLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -266,6 +306,14 @@ public class DDHomeMainFragment extends BaseFragment implements OnRefreshListene
         indexSelectedBrandAdapter = new IndexSelectedBrandAdapter();
         recyclerViewSelectedBrand.setAdapter(indexSelectedBrandAdapter);
 
+        recyclerViewCategory.setLayoutManager(new LinearLayoutManager(mContext) {
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
+        });
+        indexCategoryAdapter = new IndexCategoryAdapter();
+        recyclerViewCategory.setAdapter(indexCategoryAdapter);
 
     }
 
@@ -356,44 +404,35 @@ public class DDHomeMainFragment extends BaseFragment implements OnRefreshListene
                         llActivity.setVisibility(View.VISIBLE);
                     }
 
-                    activityAdapter.setNewData(activityBeanList);
-                    activityAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                            AutoClickManager.pars(mContext, activityBeanList.get(position));
-                        }
-                    });
-                    //brand
-
-                    if (result.getBrandHotSaleList() != null) {
-                        brandList = result.getBrandHotSaleList();
+                    if (activityBeanList.size() > 0) {
+                        GlideUtils.loadImage(mContext, ivActivity1, activityBeanList.get(0).getImgUrl());
+                        ivActivity1.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                AutoClickManager.pars(mContext, activityBeanList.get(0));
+                            }
+                        });
                     }
 
-                    if (brandList == null) {
-                        brandList = new ArrayList<>();
+                    if (activityBeanList.size() > 1) {
+                        GlideUtils.loadImage(mContext, ivActivity2, activityBeanList.get(1).getImgUrl());
+                        ivActivity2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                AutoClickManager.pars(mContext, activityBeanList.get(1));
+                            }
+                        });
                     }
-                    if (brandList.size() > 0) {
-                        llBrand.setVisibility(View.VISIBLE);
-                        brandAdapter.setNewData(brandList);
-                        brandSize = brandList.size();
-                        tvBrandPosition.setText(brandPosition + "");
-                        tvBrandSize.setText(brandSize + "");
-                    } else {
-                        llBrand.setVisibility(View.GONE);
+
+                    if (activityBeanList.size() > 2) {
+                        GlideUtils.loadImage(mContext, ivActivity3, activityBeanList.get(2).getImgUrl());
+                        ivActivity3.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                AutoClickManager.pars(mContext, activityBeanList.get(2));
+                            }
+                        });
                     }
-                    recyclerViewBrand.scrollToPosition(brandAdapter.getItemRawCount() * 10000);//开始时的偏移量
-                    brandAdapter.setOnItemClickListener(new HomeBrandAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClickListener(HomeDataBean.BrandHotSaleListBean bean, int position) {
-                            AutoClickManager.pars(mContext, brandList.get(position));
-                        }
-
-                       /* @Override
-                        public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-
-                        }*/
-                    });
-
 
                 }
             }
@@ -407,7 +446,87 @@ public class DDHomeMainFragment extends BaseFragment implements OnRefreshListene
         });
         requestRecommend();
         getIndexBrand();
+        getIndexCategory();
+        getNationalPavilionList();
     }
+
+    /**
+     * 获取国家馆
+     */
+    private void getNationalPavilionList() {
+        APIManager.startRequest(homeService.getNationalPavilionList(), new BaseRequestListener<List<NationalPavilionBean>>() {
+
+            @Override
+            public void onSuccess(final List<NationalPavilionBean> result) {
+                super.onSuccess(result);
+                //brand
+                if (brandList == null) {
+                    brandList = new ArrayList<>();
+                }
+                if (result != null) {
+                    brandList.clear();
+                    brandList.addAll(result);
+                }
+
+
+                if (brandList.size() > 0) {
+                    llBrand.setVisibility(View.VISIBLE);
+                    brandAdapter.setNewData(brandList);
+                    brandSize = brandList.size();
+                    tvBrandPosition.setText(brandPosition + "");
+                    tvBrandSize.setText(brandSize + "");
+                } else {
+                    llBrand.setVisibility(View.GONE);
+                }
+                recyclerViewBrand.scrollToPosition(brandAdapter.getItemRawCount() * 10000);//开始时的偏移量
+                brandAdapter.setOnItemClickListener(new HomeBrandAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClickListener(NationalPavilionBean bean, int position) {
+                        NationalPavilionActivity.jump(mContext, brandList, position);
+                    }
+
+                });
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+            }
+
+        });
+    }
+
+    /**
+     * 热门单品
+     */
+    private void getIndexCategory() {
+        APIManager.startRequest(homeService.getIndexCategory(), new BaseRequestListener<List<IndexCategoryBean>>() {
+
+            @Override
+            public void onSuccess(List<IndexCategoryBean> result) {
+                super.onSuccess(result);
+                indexCategoryAdapter.setNewData(result);
+                if (result.size() > 0) {
+                    llIndexCategory.setVisibility(View.VISIBLE);
+                } else {
+                    llIndexCategory.setVisibility(View.GONE);
+                }
+
+            }
+
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                ToastUtil.error(e.getMessage());
+            }
+
+
+        });
+
+
+    }
+
 
     /**
      * 精选品牌
@@ -610,7 +729,7 @@ public class DDHomeMainFragment extends BaseFragment implements OnRefreshListene
                 btnLogin.setText(user.getNickName());
                 tvGrade.setVisibility(View.VISIBLE);
                 GlideUtils.loadHead(mContext, ivHeadIcon, user.getHeadImage());
-                switch (UserManager.getInstance().getUserLevel()) {
+                switch (UserManager.getInstance().getCommodityLevel()) {
                     case 0:
                         tvGrade.setBackgroundResource(R.drawable.bg_home_register);
                         break;
@@ -622,6 +741,14 @@ public class DDHomeMainFragment extends BaseFragment implements OnRefreshListene
                         break;
                     case 3:
                         tvGrade.setBackgroundResource(R.drawable.bg_home_back);
+                        break;
+                    case 4:
+                        //临时SVIP
+                        tvGrade.setBackgroundResource(R.drawable.bg_home_vip_ex);
+                        break;
+                    case 5:
+                        //临时黑卡会员
+                        tvGrade.setBackgroundResource(R.drawable.bg_home_back_ex);
                         break;
                 }
             }

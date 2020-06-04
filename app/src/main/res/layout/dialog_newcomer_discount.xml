@@ -7,9 +7,11 @@
 
     <ImageView
         android:id="@+id/btn_content"
-        android:layout_width="@dimen/dp_270"
-        android:layout_height="@dimen/dp_340"
-        android:background="@drawable/bg_newcomer_discount" />
+        android:layout_width="@dimen/dp_300"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
+     />
 
 
     <ImageView

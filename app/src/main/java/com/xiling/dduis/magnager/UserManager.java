@@ -180,6 +180,29 @@ public class UserManager {
         return mPrice;
     }
 
+    /**
+     * 根据用户等级，获取税费
+     *
+     * @return
+     */
+    public double getTaxationForUser(ProductNewBean.SkusBean item) {
+
+        double mPrice = item.getRetailTax();
+        switch (getTemporaryUserLevel()) {
+            case 1:
+                mPrice = item.getLevel10Tax();
+                break;
+            case 2:
+                mPrice = item.getLevel20Tax();
+                break;
+            case 3:
+                mPrice = item.getLevel30Tax();
+                break;
+        }
+
+        return mPrice;
+    }
+
 
     /**
      * 根据用户等级，获取商品价格

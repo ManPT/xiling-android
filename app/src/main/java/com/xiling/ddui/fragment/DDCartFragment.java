@@ -347,8 +347,8 @@ public class DDCartFragment extends BaseFragment implements OnLoadMoreListener, 
                 parentBean.setChildPositions(childPos);
                 parentBean.setPosition(mPosition);
                 mPosition++;
-                for (int childPosition = mPosition; childPosition < skuProductListBeanList.size() + 1; childPosition++) {
-                    childPos.add(childPosition);
+                for (int childPosition = 0; childPosition < skuProductListBeanList.size(); childPosition++) {
+                    childPos.add(mPosition+childPosition);
                 }
                 cardExpandableBeanList.add(parentBean);
                 for (int childPosition = 0; childPosition < skuProductListBeanList.size(); childPosition++) {

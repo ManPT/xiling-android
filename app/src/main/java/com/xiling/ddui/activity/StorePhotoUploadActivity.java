@@ -196,21 +196,6 @@ public class StorePhotoUploadActivity extends BaseActivity {
         return !TextUtils.isEmpty(mImgURL[0]) && !TextUtils.isEmpty(mImgURL[1]);
     }
 
-    @Override
-    public void onBackPressed() {
 
-        D3ialogTools.showAlertDialog(context, "确认退出么", "退出", new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        }, "取消", new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-    }
 
 }

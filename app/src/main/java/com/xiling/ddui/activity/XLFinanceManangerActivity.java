@@ -105,6 +105,12 @@ public class XLFinanceManangerActivity extends BaseActivity {
         //充值成功，刷新
         if (message.getEvent().equals(RECHARGE_SUCCESS)) {
             getAccountInfo();
+            if ((int)message.getData() == 1){
+                ToastUtil.error("充值成功");
+            }else {
+                ToastUtil.error("提交成功\n等待审核");
+            }
+
         }
     }
 

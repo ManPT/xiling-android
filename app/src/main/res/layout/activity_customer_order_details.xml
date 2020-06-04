@@ -69,7 +69,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/dp_20"
-                    android:text="喜领仓库"
                     android:textColor="#ff202020"
                     android:textSize="@dimen/sp_13" />
             </RelativeLayout>

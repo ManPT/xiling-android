@@ -120,9 +120,59 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/white_bg_radius_4"
         android:paddingBottom="@dimen/dp_5"
-        app:layout_heightPercent="58%h"
-        app:layout_marginTopPercent="10%h"
-        app:layout_widthPercent="41.2%h">
+        app:layout_heightPercent="52.9%h"
+        app:layout_marginTopPercent="20%h"
+        app:layout_widthPercent="35.7%h">
+
+        <com.zhy.android.percent.support.PercentRelativeLayout
+            android:id="@+id/ll_headLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_heightPercent="9.3%h"
+            >
+
+            <ImageView
+                android:id="@+id/iv_headIcon"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_heightPercent="55%h"
+                app:layout_widthPercent="55%h"
+                app:layout_marginLeftPercent="3.75%h"
+                android:layout_centerVertical="true"
+                />
+
+
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ff202020"
+                app:layout_textSizePercent="35%h"
+                android:layout_toRightOf="@id/iv_headIcon"
+                app:layout_marginLeftPercent="1.25%h"
+                android:layout_centerVertical="true"
+                />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_heightPercent="50%h"
+                app:layout_widthPercent="50%h"
+                app:layout_marginRightPercent="3.75%"
+                android:background="@mipmap/ic_launcher"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                />
+
+        </com.zhy.android.percent.support.PercentRelativeLayout>
+
+        <View
+            android:id="@+id/view_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_below="@id/ll_headLayout"
+            android:background="#F2F2F2"
+            />
 
         <ImageView
             android:id="@+id/img_thumb"
@@ -131,9 +181,10 @@
             android:layout_centerHorizontal="true"
             android:background="#f7f7f7"
             android:scaleType="centerCrop"
-            app:layout_heightPercent="66.7%h"
-            app:layout_marginTopPercent="2%h"
-            app:layout_widthPercent="66.7%h" />
+            android:layout_below="@id/view_line"
+            app:layout_heightPercent="55.81%h"
+            app:layout_marginTopPercent="3.488%h"
+            app:layout_widthPercent="55.81%h" />
 
         <TextView
             android:id="@+id/tv_title"
@@ -144,28 +195,27 @@
             android:maxLines="2"
             android:textColor="#ff202020"
             android:textStyle="bold"
-            app:layout_marginLeftPercent="2%h"
-            app:layout_marginTopPercent="2%h"
-            app:layout_textSizePercent="2.7%h"
-            app:layout_widthPercent="40%h" />
+            app:layout_marginLeftPercent="2.32%h"
+            app:layout_marginTopPercent="3.72%h"
+            app:layout_textSizePercent="3.2%h"
+            app:layout_widthPercent="41.86%h" />
 
         <com.zhy.android.percent.support.PercentRelativeLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_below="@id/img_thumb"
             android:layout_toRightOf="@id/tv_title"
-            app:layout_heightPercent="29%h"
-            app:layout_marginLeftPercent="3.9%h"
-            app:layout_marginTopPercent="2%h"
-            app:layout_widthPercent="22.6%h">
+            app:layout_heightPercent="23.25%h"
+            app:layout_marginLeftPercent="2.32%h"
+            app:layout_marginTopPercent="3.72%h"
+            app:layout_widthPercent="18.13%h">
 
             <ImageView
                 android:id="@+id/iv_qr"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_centerHorizontal="true"
-                app:layout_heightPercent="78%h"
-                app:layout_widthPercent="78%h" />
+                app:layout_heightPercent="100%w"
+                app:layout_widthPercent="100%w" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -174,7 +224,7 @@
                 android:layout_centerHorizontal="true"
                 android:text="微信识别二维码"
                 android:textColor="#ff202020"
-                app:layout_marginTopPercent="6.58%h"
+                app:layout_marginTopPercent="10%h"
                 app:layout_textSizePercent="8.78%h" />
 
         </com.zhy.android.percent.support.PercentRelativeLayout>
@@ -186,8 +236,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_title"
             app:layout_marginLeftPercent="2%h"
-            app:layout_marginTopPercent="13.36%h"
-            android:textColor="#ff202020"
+            app:layout_marginTopPercent="5.58%h"
+            android:textColor="#A6251A"
             app:layout_textSizePercent="3.4%h"/>
 
 
@@ -196,9 +246,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_title"
-            android:layout_toRightOf="@id/tv_price"
             app:layout_marginLeftPercent="2%h"
-            app:layout_marginTopPercent="13.36%h"
+            app:layout_marginTopPercent="10%h"
             android:textColor="#ffaaaaaa"
             app:layout_textSizePercent="3.4%h" />
 

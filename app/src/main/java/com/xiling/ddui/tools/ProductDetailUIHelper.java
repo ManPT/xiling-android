@@ -35,6 +35,7 @@ import com.qmuiteam.qmui.util.QMUIStatusBarHelper;
 import com.xiling.shared.util.ToastUtil;
 import com.xiling.shared.util.WebViewUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -159,6 +160,12 @@ public class ProductDetailUIHelper {
     TextView tvUserTaxation;
     @BindView(R.id.btn_tax_explain)
     View btnTaxExplain;
+    @BindView(R.id.tv_national_pavilion)
+    TextView tvNationalPavilion;
+    @BindView(R.id.iv_national_pavilion)
+    ImageView ivNationalPavilion;
+
+
     private OnActionListener mOnActionListener;
 
     private DDProductDetailActivity mContext;
@@ -248,6 +255,8 @@ public class ProductDetailUIHelper {
         }
 
         mTvProductTitle.setText(spuInfo.getProductName());
+        GlideUtils.loadHead(mContext,ivNationalPavilion,spuInfo.getCountryIcon());
+        tvNationalPavilion.setText(spuInfo.getCountryName());
 
         String mStatus = ShopUtils.checkShopStatus(spuInfo.getStatus(), spuInfo.getStock());
         if (!TextUtils.isEmpty(mStatus)) {
@@ -307,7 +316,9 @@ public class ProductDetailUIHelper {
         };
         tagManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerTag.setLayoutManager(tagManager);
-        shopListTagsAdapter = new ShopListTagsAdapter(R.layout.item_shop_list_tag, spuInfo.getProductTags());
+        List<String> tags = new ArrayList<>();
+        tags.add(spuInfo.getTradeType());
+        shopListTagsAdapter = new ShopListTagsAdapter(R.layout.item_shop_list_tag, tags);
         recyclerTag.setAdapter(shopListTagsAdapter);
 
 
@@ -560,6 +571,23 @@ public class ProductDetailUIHelper {
         }
     }
 
+    private void setSkuPrice(ProductNewBean.SkusBean skusBean){
+        //优惠价，需要根据用户等级展示不同价格
+        NumberHandler.setPriceText(UserManager.getInstance().getPriceForUser(skusBean), tvDiscountPrice, tvDiscountPriceDecimal);
+
+        //售价
+        tvMinPrice.setText("¥" + NumberHandler.reservedDecimalFor2(skusBean.getRetailPrice()));
+        //划线价
+        tvMinMarketPrice.setText("¥" + NumberHandler.reservedDecimalFor2(skusBean.getMarketPrice()));
+        tvMinMarketPrice.getPaint().setAntiAlias(true);//抗锯齿
+        tvMinMarketPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        double tax = UserManager.getInstance().getTaxationForUser(skusBean);
+        if (tax > 0) {
+            tvUserTaxation.setText("进口税:¥" + NumberHandler.reservedDecimalFor2(tax));
+        } else {
+            tvUserTaxation.setText("进口税:商品价格已包税");
+        }
+    }
 
     private void showSkuDialog(int action) {
         if (mSpuInfo != null && mSpuInfo.getSkus() != null && mSpuInfo.getSkus().size() > 0) {
@@ -571,21 +599,23 @@ public class ProductDetailUIHelper {
             }
 
             mSkuSelectorDialog.setSelectListener(new SkuSelectorDialog.OnSelectListener() {
-
                 @Override
-                public void onClose(String propertyValue) {
-                    updateSkuViews(propertyValue);
+                public void onClose(ProductNewBean.SkusBean skusBean) {
+                    updateSkuViews(skusBean.getPropertyValues());
+                    setSkuPrice(skusBean);
                 }
 
                 @Override
-                public void joinShopCart(String skuId, String propertyValue, int selectCount) {
-                    updateSkuViews(propertyValue);
+                public void joinShopCart(String skuId, ProductNewBean.SkusBean skusBean, int selectCount) {
+                    updateSkuViews(skusBean.getPropertyValues());
+                    setSkuPrice(skusBean);
                     mOnActionListener.onAddCart(skuId, selectCount);
                 }
 
                 @Override
-                public void buyItNow(String skuId, String propertyValue, int selectCount) {
-                    updateSkuViews(propertyValue);
+                public void buyItNow(String skuId, ProductNewBean.SkusBean skusBean, int selectCount) {
+                    updateSkuViews(skusBean.getPropertyValues());
+                    setSkuPrice(skusBean);
                     SkuListBean skuListBean = new SkuListBean(skuId, selectCount);
                     mOnActionListener.onClickBuy(skuListBean);
                 }

@@ -20,6 +20,16 @@ public  class DetailsBean implements Parcelable {
     private String skuName;
     private String productImage;
     private String productSpecification;
+
+    public String getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String properties) {
+        this.properties = properties;
+    }
+
+    private String properties;
     private double price;
     private double retailPrice;
     private String skuId;
@@ -126,6 +136,7 @@ public  class DetailsBean implements Parcelable {
         dest.writeString(this.skuCode);
         dest.writeInt(this.quantity);
         dest.writeDouble(this.taxes);
+        dest.writeString(this.properties);
         dest.writeByte(this.cross ? (byte) 1 : (byte) 0);
     }
 
@@ -137,6 +148,7 @@ public  class DetailsBean implements Parcelable {
         this.skuName = in.readString();
         this.productImage = in.readString();
         this.productSpecification = in.readString();
+        this.properties = in.readString();
         this.price = in.readDouble();
         this.retailPrice = in.readDouble();
         this.skuId = in.readString();

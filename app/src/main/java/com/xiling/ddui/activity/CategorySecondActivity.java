@@ -72,14 +72,9 @@ public class CategorySecondActivity extends BaseActivity {
     private List<String> childNames = new ArrayList<>();
 
     private String minPrice, maxPrice;
-    /**
-     * 是否包邮 0-非,1-是
-     */
-    private int isShippingFree = 0;
 
     /**
-     * 排序属性 0-价格,1-上新,2-销量
-     * 默认 上新
+     * 排序属性 0-价格,1-上新,2-销量，3-利润
      */
     private int orderBy = 4;
 
@@ -87,14 +82,25 @@ public class CategorySecondActivity extends BaseActivity {
      * 排序方式 0-降序(Desc), 1-升序(Asc)
      */
     private int orderType = 2;
+    /**
+     * 售卖类型(1-一件代发,2-批采)
+     */
+    private String saleType = "";
+
+    /**
+     * 贸易类型(1-国内品牌-国内OEM,2-跨境保税,3-一般贸易,4-海外直邮)
+     */
+    private String tradeType = "";
+
+
     private String keyWord = "";
 
 
-    public static void jumpCategorySecondActivity(Context mContext, String parentId, String categoryId,String parentName) {
+    public static void jumpCategorySecondActivity(Context mContext, String parentId, String categoryId, String parentName) {
         Intent intent = new Intent(mContext, CategorySecondActivity.class);
         intent.putExtra("categoryId", categoryId);
         intent.putExtra("parentId", parentId);
-        intent.putExtra("parentName",parentName);
+        intent.putExtra("parentName", parentName);
         mContext.startActivity(intent);
     }
 
@@ -108,7 +114,7 @@ public class CategorySecondActivity extends BaseActivity {
         if (getIntent() != null) {
             categoryId = getIntent().getStringExtra("categoryId");
             mParentId = getIntent().getStringExtra("parentId");
-            mParentName= getIntent().getStringExtra("parentName");
+            mParentName = getIntent().getStringExtra("parentName");
         }
         getSecondClassification();
 
@@ -130,7 +136,7 @@ public class CategorySecondActivity extends BaseActivity {
                             mPosition = i;
                         }
                         childNames.add(secondCategoryListBean.getCategoryName());
-                        fragments.add(ShopFragment.newInstance(mParentId, secondCategoryListBean.getCategoryId(), "", minPrice, maxPrice, isShippingFree, orderBy, orderType, ""));
+                        fragments.add(ShopFragment.newInstance(mParentId, secondCategoryListBean.getCategoryId(), "", minPrice, maxPrice, orderBy, orderType, saleType, tradeType, ""));
                     }
                 }
 
@@ -183,17 +189,18 @@ public class CategorySecondActivity extends BaseActivity {
                 CategorySecondActivity.this.orderBy = orderBy;
                 CategorySecondActivity.this.orderType = orderType;
                 for (Fragment fragment : fragments) {
-                    ((ShopFragment) fragment).requestShopFill(minPrice, maxPrice, isShippingFree, orderBy, orderType, keyWord);
+                    ((ShopFragment) fragment).requestShopFill(minPrice, maxPrice, orderBy, orderType, saleType, tradeType, keyWord);
                 }
             }
 
             @Override
-            public void onFilter(int isShippingFree, String minPrice, String maxPrice) {
-                CategorySecondActivity.this.isShippingFree = isShippingFree;
+            public void onFilter(String tradeType, String saleType, String minPrice, String maxPrice) {
                 CategorySecondActivity.this.minPrice = minPrice;
                 CategorySecondActivity.this.maxPrice = maxPrice;
+                CategorySecondActivity.this.tradeType = tradeType;
+                CategorySecondActivity.this.saleType = saleType;
                 for (Fragment fragment : fragments) {
-                    ((ShopFragment) fragment).requestShopFill(minPrice, maxPrice, isShippingFree, orderBy, orderType, keyWord);
+                    ((ShopFragment) fragment).requestShopFill(minPrice, maxPrice, orderBy, orderType, saleType, tradeType, keyWord);
                 }
             }
         });

@@ -4,8 +4,11 @@ import com.xiling.shared.bean.MainAdModel;
 import com.xiling.shared.bean.Splash;
 import com.xiling.shared.bean.api.RequestResult;
 
+import java.util.List;
+
 import io.reactivex.Observable;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 /**
  * @author JayChan <voidea@foxmail.com>
@@ -15,8 +18,8 @@ import retrofit2.http.GET;
  */
 public interface IAdService {
 
-    @GET("splashScreen/getSplashScreen")
-    Observable<RequestResult<Splash>> getSplashAd();
+    @GET("splash-screen/list")
+    Observable<RequestResult<List<Splash>>> getSplashAd(@Query("type") int type);
 
     @GET("popupWindows/get")
     Observable<RequestResult<MainAdModel>> getMainAd();

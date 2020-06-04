@@ -38,7 +38,7 @@ public class ServicePolicyDialog extends Dialog {
         ButterKnife.bind(this);
         tvContent = findViewById(R.id.tv_content);
         SpannableStringBuilder spannableBuilder = new SpannableStringBuilder(content);
-
+        setCanceledOnTouchOutside(false);
         // 在设置点击事件、同时设置字体颜色
         ClickableSpan clickableSpanTwo = new ClickableSpan() {
             @Override

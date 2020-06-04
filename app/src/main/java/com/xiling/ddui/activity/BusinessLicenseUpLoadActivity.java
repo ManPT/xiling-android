@@ -130,18 +130,4 @@ public class BusinessLicenseUpLoadActivity extends BaseActivity {
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        D3ialogTools.showAlertDialog(context, "确认退出么", "退出", new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        }, "取消", new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-    }
 }

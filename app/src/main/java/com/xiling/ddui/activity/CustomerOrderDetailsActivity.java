@@ -92,7 +92,7 @@ public class CustomerOrderDetailsActivity extends BaseActivity {
         recyclerSku.setAdapter(skuAdapter);
         recyclerSku.setLayoutManager(new LinearLayoutManager(context));
         skuAdapter.setNewData(recordsBean.getClientOrderDetailList());
-
+        tvWarehouseName.setText(recordsBean.getStoreName());
         if (!TextUtils.isEmpty(recordsBean.getOrderCode())) {
             tvOrderId.setText("订单编号：" + recordsBean.getOrderCode());
         }

@@ -33,5 +33,9 @@ public class H5UrlConfig {
     public static final String CROSS_NEED_NOTE  =BuildConfig.BASE_URL +"crossNeedNote";
     //卡券中心
     public static final String CARD_VOUCHER_CENTER  =BuildConfig.BASE_URL +"cardsAndCouponsList";
+    //排行榜列表页
+    public static final String WEB_URL_RANK  =BuildConfig.BASE_URL +"rank";
+    //排行榜列表页
+    public static final String WEB_URL_BRAND  =BuildConfig.BASE_URL +"brand?brandId=";
 
 }

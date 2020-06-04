@@ -169,7 +169,7 @@ public class UploadCredentalsActivity extends BaseActivity {
                     //拆单需求变更，跳转订单列表
                     OrderListActivit.jumpOrderList(context, ORDER_WAIT_SHIP);
                 } else if (type.equals(PAY_TYPE_CHARGE_MONEY)) {
-                    EventBus.getDefault().post(new EventMessage(RECHARGE_SUCCESS));
+                    EventBus.getDefault().post(new EventMessage(RECHARGE_SUCCESS,2));
                 }
             }
 

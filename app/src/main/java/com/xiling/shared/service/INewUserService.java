@@ -9,6 +9,7 @@ import com.xiling.ddui.bean.MyClientListBean;
 import com.xiling.ddui.bean.MyManagerBean;
 import com.xiling.ddui.bean.PlatformBean;
 import com.xiling.ddui.bean.RealAuthBean;
+import com.xiling.ddui.bean.RechareConfigBean;
 import com.xiling.ddui.bean.UserCostomBean;
 import com.xiling.ddui.bean.UserInComeBean;
 import com.xiling.shared.bean.NewUserBean;
@@ -272,5 +273,13 @@ public interface INewUserService {
      */
     @GET("share/invite-friends-image")
     Observable<RequestResult<List<String>>> getInviteFriendsImage();
+
+    /**
+     * 充值配置参数
+     */
+    @GET("config/recharge-config")
+    Observable<RequestResult<RechareConfigBean>> getRechareConfig();
+
+
 
 }

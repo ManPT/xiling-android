@@ -161,7 +161,7 @@
 
                             <TextView
                                 android:id="@+id/tv_roleLevel"
-                                android:layout_width="@dimen/dp_50"
+                                android:layout_width="wrap_content"
                                 android:layout_height="@dimen/dp_14"
                                 android:layout_marginLeft="@dimen/dp_3"
                                 android:textColor="@color/white"

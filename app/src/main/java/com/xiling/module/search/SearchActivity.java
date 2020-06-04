@@ -71,9 +71,9 @@ public class SearchActivity extends BaseActivity {
 
     String s_minPrice;
     String s_maxPrice;
-    int s_orderBy = 1;
+    int s_orderBy = 4;
     int s_orderType;
-    int s_isFreeShip;
+    String s_saleType,s_tradeType;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,10 +100,11 @@ public class SearchActivity extends BaseActivity {
             }
 
             @Override
-            public void onFilter(int isShippingFree, String minPrice, String maxPrice) {
-                s_isFreeShip = isShippingFree;
+            public void onFilter(String tradeType, String saleType, String minPrice, String maxPrice) {
                 s_minPrice = minPrice;
                 s_maxPrice = maxPrice;
+                s_tradeType = tradeType;
+                s_saleType = saleType;
 
                 requestShop();
             }
@@ -245,10 +246,10 @@ public class SearchActivity extends BaseActivity {
 
     private void requestShop() {
         if (shopFragment == null) {
-            shopFragment = ShopFragment.newInstance("", "", "", s_minPrice, s_maxPrice, s_isFreeShip, s_orderBy, s_orderType, mKeyword);
+            shopFragment = ShopFragment.newInstance("", "", "", s_minPrice, s_maxPrice, s_orderBy, s_orderType,s_saleType,s_tradeType, mKeyword);
             getSupportFragmentManager().beginTransaction().add(R.id.frame_layout, shopFragment).commit();
         } else {
-            shopFragment.requestShopFill(s_minPrice, s_maxPrice, s_isFreeShip, s_orderBy, s_orderType, mKeyword);
+            shopFragment.requestShopFill(s_minPrice, s_maxPrice, s_orderBy, s_orderType,s_saleType,s_tradeType, mKeyword);
         }
     }
 

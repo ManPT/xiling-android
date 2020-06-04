@@ -204,6 +204,15 @@ public class NumberField extends LinearLayout {
     private void setButtonsEnabled() {
         this.mMinusBtn.setEnabled(this.mValue > mMin);
         //  this.mPlusBtn.setEnabled(this.mValue < mMax);
+        this.mPlusBtn.setEnabled(true);
+    }
+
+    /**
+     * sku为null时，禁止改动数量
+     */
+    public void setNull() {
+        this.mMinusBtn.setEnabled(false);
+        this.mPlusBtn.setEnabled(false);
     }
 
     public void setOnChangeListener(OnValueChangeLister listener) {

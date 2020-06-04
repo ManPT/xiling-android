@@ -62,6 +62,23 @@ public class CustomerOrderBean {
         String createDate;
         String payDate;
         String receivedDate;
+
+        public int getTotalQuantoity() {
+            return totalQuantoity;
+        }
+
+        int totalQuantoity;
+
+        public double getFreight() {
+            return freight/100;
+        }
+
+        public double getTotalTaxes() {
+            return totalTaxes/100;
+        }
+
+        double freight;
+        double totalTaxes;
         double receiptsIndices;
         List<DetailsBean> clientOrderDetailList;
 
@@ -162,6 +179,9 @@ public class CustomerOrderBean {
             dest.writeString(this.receivedDate);
             dest.writeDouble(this.receiptsIndices);
             dest.writeTypedList(this.clientOrderDetailList);
+            dest.writeDouble(this.freight);
+            dest.writeDouble(this.totalTaxes);
+            dest.writeInt(this.totalQuantoity);
         }
 
         public OrderDetailsBean() {
@@ -178,6 +198,9 @@ public class CustomerOrderBean {
             this.receivedDate = in.readString();
             this.receiptsIndices = in.readDouble();
             this.clientOrderDetailList = in.createTypedArrayList(DetailsBean.CREATOR);
+            this.freight = in.readDouble();
+            this.totalTaxes = in.readDouble();
+            this.totalQuantoity = in.readInt();
         }
 
         public static final Parcelable.Creator<OrderDetailsBean> CREATOR = new Parcelable.Creator<OrderDetailsBean>() {

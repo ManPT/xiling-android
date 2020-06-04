@@ -3,69 +3,101 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bg_splash"
     tools:context="com.xiling.ddui.activity.DDSplashActivity">
 
     <ImageView
-        android:id="@+id/tv_title1"
-        android:layout_width="@dimen/dp_18"
-        android:layout_height="@dimen/dp_230"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_150"
-        android:background="@mipmap/bg_splash_title"
-       />
+        android:id="@+id/iv_splash"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:visibility="invisible" />
 
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/dp_43"
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="@dimen/dp_58"
+        android:layout_height="@dimen/dp_24"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_15"
         android:gravity="center"
-        android:orientation="vertical">
+        android:background="@drawable/bg_rectangle_count_down"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/white"
+        android:visibility="invisible"
+        />
+
+
+    <RelativeLayout
+        android:id="@+id/rel_def"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <ImageView
-            android:layout_width="58dp"
-            android:layout_height="58dp"
-            android:background="@mipmap/ic_launcher" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@mipmap/bg_splash" />
+
+        <ImageView
+            android:id="@+id/tv_title1"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_230"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_150"
+            android:background="@mipmap/bg_splash_title" />
+
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_12"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_43"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <View
-                android:layout_width="@dimen/dp_12"
-                android:layout_height="@dimen/dp_1"
-                android:background="#D8D8D8" />
+            <ImageView
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:background="@mipmap/ic_launcher" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_12"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="@dimen/dp_12"
+                    android:layout_height="@dimen/dp_1"
+                    android:background="#D8D8D8" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:layout_marginRight="@dimen/dp_4"
+                    android:text="健康优质供应链平台"
+                    android:textColor="#ff202020"
+                    android:textSize="@dimen/dp_12" />
+
+                <View
+                    android:layout_width="@dimen/dp_12"
+                    android:layout_height="@dimen/dp_1"
+                    android:background="#D8D8D8" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_4"
-                android:text="健康优质供应链平台"
+                android:layout_marginTop="@dimen/dp_2"
+                android:text="\@xiling.com"
                 android:textColor="#ff202020"
-                android:textSize="@dimen/dp_12" />
+                android:textSize="@dimen/dp_10" />
 
-            <View
-                android:layout_width="@dimen/dp_12"
-                android:layout_height="@dimen/dp_1"
-                android:background="#D8D8D8" />
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
-            android:text="\@xiling.com"
-            android:textColor="#ff202020"
-            android:textSize="@dimen/dp_10" />
-
-    </LinearLayout>
+    </RelativeLayout>
 
 
 </RelativeLayout>

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.xiling.R;
 import com.xiling.ddui.bean.PlatformBean;
 import com.xiling.ddui.bean.TopCategoryBean;
+import com.xiling.ddui.custom.D3ialogTools;
 import com.xiling.ddui.custom.popupwindow.BusinessCategorySelectPopWindow;
 import com.xiling.ddui.custom.popupwindow.PlatformSelectPopWindow;
 import com.xiling.shared.basic.BaseActivity;
@@ -204,6 +205,23 @@ public class RealAuthenticationNetActivity extends BaseActivity {
             public void onError(Throwable e) {
                 super.onError(e);
                 ToastUtil.error(e.getMessage());
+
+            }
+        });
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        D3ialogTools.showAlertDialog(context, "还未提交认证，确认退出吗?", "退出", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        }, "取消", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
             }
         });

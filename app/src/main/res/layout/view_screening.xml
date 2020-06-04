@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="horizontal"
-    android:weightSum="3">
+    android:weightSum="4">
 
 
     <RelativeLayout
@@ -65,7 +65,43 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp"
-                android:src="@mipmap/icon_price_unselect" />
+                android:src="@mipmap/icon_price_unselect"
+                android:visibility="gone"
+                />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/ll_profit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_profit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="利润"
+                android:textColor="#ffaaaaaa"
+                android:textSize="13sp" />
+
+            <ImageView
+                android:id="@+id/profitStatusView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:src="@mipmap/icon_price_unselect"
+                android:visibility="gone"
+                />
 
         </LinearLayout>
 
@@ -94,9 +130,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
                 android:background="@mipmap/icon_fliter"
                 android:gravity="center"
-                android:layout_marginLeft="5dp"
                 android:minWidth="12dp"
                 android:minHeight="12dp" />
 

@@ -32,6 +32,7 @@ public class IndexBrandBean {
     private String createDate;
     private String updateDate;
     private String deleteFlag;
+
     private List<IndexBrandBeanListBean> indexBrandBeanList;
 
     public String getBrandId() {
@@ -200,6 +201,13 @@ public class IndexBrandBean {
         private String createDate;
         private String updateDate;
         private String deleteFlag;
+        private String shortName;
+
+        public String getShortName() {
+            return shortName;
+        }
+
+
 
         public String getProductId() {
             return productId;

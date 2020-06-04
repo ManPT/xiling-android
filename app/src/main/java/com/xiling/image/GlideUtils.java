@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Looper;
 import android.support.annotation.UiThread;
@@ -52,13 +53,49 @@ public class GlideUtils {
                 .into(imageView);
     }
 
+
     public static void loadImageALL(Context context, ImageView imageView, String url) {
         Glide.with(context).load(url)
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .placeholder(R.drawable.bg_image_def)
+                .listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+
+                        return false;
+                    }
+                })
                 .into(imageView);
     }
+
+    public static void loadImageALL(Context context, ImageView imageView, String url,final RequestListener requestListener) {
+        Glide.with(context).load(url)
+                .dontAnimate()
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .placeholder(R.drawable.bg_image_def)
+                .listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        requestListener.onException(e,model,target,isFirstResource);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        requestListener.onResourceReady(resource,model,target,isFromMemoryCache,isFirstResource);
+                        return false;
+                    }
+                })
+                .into(imageView);
+    }
+
+
 
     /**
      * 自适应宽度加载图片。保持图片的长宽比例不变，通过修改imageView的高度来完全显示图片。
@@ -183,6 +220,13 @@ public class GlideUtils {
 
 
     public static void loadImage(Context context, ImageView imageView, int url) {
+        Glide.with(context).load(url)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .placeholder(R.drawable.bg_image_def)
+                .into(imageView);
+    }
+
+    public static void loadImageNoDisk(Context context, ImageView imageView, String url) {
         Glide.with(context).load(url)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .placeholder(R.drawable.bg_image_def)

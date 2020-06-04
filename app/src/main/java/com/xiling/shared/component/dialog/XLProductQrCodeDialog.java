@@ -1,13 +1,10 @@
 package com.xiling.shared.component.dialog;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -22,26 +19,17 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.xiling.BuildConfig;
 import com.xiling.R;
 import com.xiling.ddui.bean.ProductNewBean;
-import com.xiling.ddui.manager.PosterMaker;
-import com.xiling.ddui.tools.DLog;
-import com.xiling.ddui.tools.ImageTools;
 import com.xiling.ddui.tools.NumberHandler;
-import com.xiling.dduis.dialog.DDSaveImageResponseDialog;
 import com.xiling.dduis.magnager.UserManager;
 import com.xiling.image.GlideUtils;
 import com.xiling.shared.util.CommonUtil;
-import com.xiling.shared.util.SessionUtil;
 import com.xiling.shared.util.ShareUtils;
 import com.xiling.shared.util.ToastUtil;
-
-import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import cn.bingoogolapple.qrcode.core.BGAQRCodeUtil;
-import cn.bingoogolapple.qrcode.zxing.QRCodeEncoder;
 
 public class XLProductQrCodeDialog extends Dialog {
 
@@ -59,6 +47,10 @@ public class XLProductQrCodeDialog extends Dialog {
     TextView tvMarketPrice;
     @BindView(R.id.RelScreen)
     RelativeLayout relScreen;
+    @BindView(R.id.iv_headIcon)
+    ImageView ivHeadIcon;
+    @BindView(R.id.tv_user_name)
+    TextView tvUserName;
 
     private String sharedTitle = "";
     private String sharedDes = "从源头到客服一站式服务、一件代发，专享批发价格";
@@ -104,6 +96,9 @@ public class XLProductQrCodeDialog extends Dialog {
             tvPrice.setText("¥ " + NumberHandler.reservedDecimalFor2(productNewBean.getMinPrice()));
             tvMarketPrice.setText("¥ " + NumberHandler.reservedDecimalFor2(productNewBean.getMinMarketPrice()));
         }
+
+        GlideUtils.loadHead(mActivity,ivHeadIcon,UserManager.getInstance().getUser().getHeadImage());
+        tvUserName.setText(UserManager.getInstance().getUser().getNickName());
 
         ShareUtils.createQRImage(mActivity, sharedUrl, new ShareUtils.OnQRImageListener() {
             @Override
