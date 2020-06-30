@@ -206,10 +206,10 @@ public class XLMineFragment extends BaseFragment implements OnRefreshListener, N
             serviceBeanList.add(new MineServiceAdapter.ServiceBean(R.drawable.icon_help, "帮助与客服", true));
             serviceBeanList.add(new MineServiceAdapter.ServiceBean(R.drawable.icon_rule, "规则中心", true));
             serviceBeanList.add(new MineServiceAdapter.ServiceBean(R.drawable.icon_paihang, "排行榜", true));
-            serviceBeanList.add(new MineServiceAdapter.ServiceBean(R.drawable.icon_activite, "活动报名", false));
-            serviceBeanList.add(new MineServiceAdapter.ServiceBean(R.drawable.icon_collage, "我的拼团", false));
-            serviceBeanList.add(new MineServiceAdapter.ServiceBean(R.drawable.icon_author, "授权管理", false));
-            serviceBeanList.add(new MineServiceAdapter.ServiceBean(R.drawable.icon_complaint, "投诉建议", false));
+            //serviceBeanList.add(new MineServiceAdapter.ServiceBean(R.drawable.icon_activite, "活动报名", false));
+           // serviceBeanList.add(new MineServiceAdapter.ServiceBean(R.drawable.icon_collage, "我的拼团", false));
+           // serviceBeanList.add(new MineServiceAdapter.ServiceBean(R.drawable.icon_author, "授权管理", false));
+            //serviceBeanList.add(new MineServiceAdapter.ServiceBean(R.drawable.icon_complaint, "投诉建议", false));
         } else {
             ivUserOrdinary.setVisibility(View.VISIBLE);
             llUserVip.setVisibility(View.GONE);

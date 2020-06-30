@@ -13,8 +13,8 @@ android {
         applicationId "com.xiling"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 1008
-        versionName "1.0.8"
+        versionCode 1010
+        versionName "1.1.0"
         multiDexEnabled true
 
         flavorDimensions "channel"

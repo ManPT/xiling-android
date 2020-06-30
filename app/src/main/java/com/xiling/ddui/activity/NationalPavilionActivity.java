@@ -6,19 +6,30 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.flyco.tablayout.SlidingTabLayout;
 import com.xiling.R;
 import com.xiling.ddui.bean.NationalPavilionBean;
 import com.xiling.ddui.fragment.NationalPavilionFragment;
+import com.xiling.ddui.tools.ViewUtil;
 import com.xiling.image.GlideUtils;
+import com.xiling.module.MainActivity;
 import com.xiling.shared.basic.BaseActivity;
+import com.xiling.shared.bean.event.EventMessage;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+import static com.xiling.shared.constant.Event.viewCart;
 
 /**
  * @author pt
@@ -34,6 +45,8 @@ public class NationalPavilionActivity extends BaseActivity {
     private ArrayList<Fragment> fragments = new ArrayList<>();
     private List<String> childNames = new ArrayList<>();
     int mPosition = 0;
+    @BindView(R.id.tv_cart_badge)
+    TextView tvCartBadge;
 
     public static void jump(Context context, ArrayList<NationalPavilionBean> nationalPavilionBeanList, int position) {
         Intent intent = new Intent(context, NationalPavilionActivity.class);
@@ -61,7 +74,7 @@ public class NationalPavilionActivity extends BaseActivity {
                     childNames.add(nationalPavilionBean.getCountryName());
                     fragments.add(NationalPavilionFragment.newInstance(nationalPavilionBean));
                 }
-               // viewpager.setOffscreenPageLimit(nationalPavilionBeanList.size());
+                // viewpager.setOffscreenPageLimit(nationalPavilionBeanList.size());
                 slidingTab.setViewPager(viewpager, childNames.toArray(new String[childNames.size()]), this, fragments);
 
                 if (mPosition > 0) {
@@ -73,5 +86,26 @@ public class NationalPavilionActivity extends BaseActivity {
 
         }
 
+    }
+
+    /**
+     * 接收购物车数量变更
+     *
+     * @param message
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventBus(EventMessage message) {
+        switch (message.getEvent()) {
+            case cartAmountUpdate:
+                int total = (int) message.getData();
+                ViewUtil.setCartBadge(total, tvCartBadge);
+                break;
+        }
+    }
+
+    @OnClick(R.id.btn_go_card)
+    public void onViewClicked() {
+        startActivity(new Intent(context, MainActivity.class));
+        EventBus.getDefault().post(new EventMessage(viewCart));
     }
 }

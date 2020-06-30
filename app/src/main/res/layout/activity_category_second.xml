@@ -54,7 +54,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginRight="37dp"
         android:layout_marginBottom="@dimen/dp_30"
-        android:visibility="gone"
+        android:visibility="visible"
         >
 
 

@@ -158,12 +158,12 @@ public class NationalPavilionFragment extends BaseFragment implements OnRefreshL
                             }
 
                             shopDataList.addAll(result.getDatas());
-
-                            if (pageOffset == 1) {
-                                shopAdapter.setNewData(result.getDatas());
+                            shopAdapter.setNewData(shopDataList);
+                           /* if (pageOffset == 1) {
+                                shopAdapter.setNewData(shopDataList);
                             } else {
                                 shopAdapter.addData(result.getDatas());
-                            }
+                            }*/
 
                         }
 

@@ -166,7 +166,7 @@ public class ShopFragment extends BaseFragment implements OnRefreshListener, OnL
         ShopCardManager.getInstance().requestUpDataShopCardCount();
         View view = inflater.inflate(R.layout.fragment_shop, container, false);
         unbinder = ButterKnife.bind(this, view);
-        // btnGoCard.setVisibility(TextUtils.isEmpty(secondCategoryId)?View.VISIBLE:View.GONE);
+        btnGoCard.setVisibility(TextUtils.isEmpty(secondCategoryId)?View.VISIBLE:View.GONE);
         smartRefreshLayout.setEnableLoadMore(true);
         smartRefreshLayout.setEnableRefresh(true);
         smartRefreshLayout.setOnLoadMoreListener(this);
