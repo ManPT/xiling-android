@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -26,10 +27,12 @@ import com.xiling.MyApplication;
 import com.xiling.R;
 import com.xiling.ddui.activity.SelectAddressMapActivity;
 import com.xiling.ddui.bean.AddressListBean;
+import com.xiling.ddui.custom.D3ialogTools;
 import com.xiling.ddui.custom.DDDeleteDialog;
 import com.xiling.ddui.manager.AddressMapManager;
 import com.xiling.ddui.manager.AddressPicker;
 import com.xiling.ddui.tools.DLog;
+import com.xiling.ddui.tools.SmartAddressUtil;
 import com.xiling.shared.basic.BaseActivity;
 import com.xiling.shared.basic.BaseRequestListener;
 import com.xiling.shared.bean.Address;
@@ -41,6 +44,7 @@ import com.xiling.shared.manager.APIManager;
 import com.xiling.shared.manager.ServiceManager;
 import com.xiling.shared.service.contract.IAddressService;
 import com.xiling.shared.service.contract.IRegionService;
+import com.xiling.shared.util.ShareUtilsNew;
 import com.xiling.shared.util.ToastUtil;
 import com.tbruyelle.rxpermissions.Permission;
 import com.tbruyelle.rxpermissions.RxPermissions;
@@ -84,6 +88,8 @@ public class AddressFormActivity extends BaseActivity {
 
     AddressPicker picker = null;
     String addressId = "";
+    boolean isFirst = true;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,16 +116,95 @@ public class AddressFormActivity extends BaseActivity {
             isEditAddress = action != null && action.equals(Key.EDIT_ADDRESS);
             addressId = intent.getExtras().getString("addressId");
         }
-        if (TextUtils.isEmpty(addressId)) {
-            autoLocationCity();
-        }
+        picker = new AddressPicker(context);
+
+       /* if (TextUtils.isEmpty(addressId)) {
+            //如果剪贴板没有内容，定位当前位置
+            final String clipMessage = ShareUtilsNew.getClipMessage(context);
+            if (TextUtils.isEmpty(clipMessage)) {
+
+            }
+        }*/
         setTitle("收货地址");
         initHeaderButtons();
         if (isEditAddress && !TextUtils.isEmpty(addressId)) {
             getAddressInfo(addressId);
         }
-        picker = new AddressPicker(context);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //因为Android10只有在页面完全显示的情况下，才允许使用剪贴板，所以把智能识别地址的代码发在此处
+        if (TextUtils.isEmpty(addressId)) {
+            this.getWindow().getDecorView().post(new Runnable() {
+                @Override
+                public void run() {
+                    intelligentAnalysis();
+                    isFirst = false;
+                }
+            });
+        }
+    }
+
+    private void intelligentAnalysis() {
+        //如果剪贴板没有内容，定位当前位置
+        final String clipMessage = ShareUtilsNew.getClipMessage(context);
+        if (!TextUtils.isEmpty(clipMessage)) {
+            // 如果剪贴板有内容，提示是否使用剪贴板内容智能匹配地址
+            D3ialogTools.showAlertDialog(context, "是否粘贴一下地址", clipMessage, "立即粘贴", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ShareUtilsNew.clearClipboard(context);
+                    final AddressPicker picker = new AddressPicker(context);
+                    picker.setDataLoadListener(new AddressPicker.AddressDataLoadListener() {
+                        @Override
+                        public void onLoadFinish() {
+                            AddressListBean.DatasBean addressBean = SmartAddressUtil.smartAddressParse(clipMessage, picker);
+                            if (addressBean != null) {
+                                mAddress.setProvinceName(addressBean.getProvinceName());
+                                mAddress.setProvinceId(addressBean.getProvinceId());
+                                mAddress.setCityName(addressBean.getCityName());
+                                mAddress.setCityId(addressBean.getCityId());
+                                mAddress.setDistrictName(addressBean.getDistrictName());
+                                mAddress.setDistrictId(addressBean.getDistrictId());
+                                mAddress.setDetail(addressBean.getDetail());
+                                mAddress.setContact(addressBean.getContact());
+                                mAddress.setPhone(addressBean.getPhone());
+
+                                setPCAText(mAddress.getFullRegion());
+                                if (!TextUtils.isEmpty(mAddress.getDetail())) {
+                                    mDetailEt.setText("" + mAddress.getDetail());
+                                }
+
+                                if (!TextUtils.isEmpty(mAddress.getContact())) {
+                                    mContactsEt.setText(mAddress.getContact());
+                                }
+
+                                if (!TextUtils.isEmpty(mAddress.getPhone())) {
+                                    mPhoneEt.setText(mAddress.getPhone());
+                                }
+
+                            }
+                        }
+                    });
+                    picker.readData();
+                }
+            }, "我再想想", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
+        }else {
+            if (isFirst){
+                autoLocationCity();
+            }
+        }
+
+    }
+
 
     /**
      * 定位到当前城市
@@ -382,7 +467,7 @@ public class AddressFormActivity extends BaseActivity {
                     mAddress.setPhone(phone);
                     mAddress.setDetail(detail);
                     mAddress.setIsDefault(mDefaultSwitch.isSelected() ? 1 : 0);
-                    EventBus.getDefault().post(new EventMessage(Event.saveAddress,mAddress));
+                    EventBus.getDefault().post(new EventMessage(Event.saveAddress, mAddress));
                 }
                 finish();
             }

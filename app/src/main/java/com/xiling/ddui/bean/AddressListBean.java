@@ -2,6 +2,7 @@ package com.xiling.ddui.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.util.List;
 
@@ -129,7 +130,15 @@ public class AddressListBean implements Parcelable {
         private int isDefault;
 
         public String getFullRegion(){
-            return  provinceName+" "+cityName+" "+districtName;
+            if (TextUtils.isEmpty(provinceName)){
+                return "";
+            }else if (TextUtils.isEmpty(cityName)){
+                return provinceName;
+            }else if (TextUtils.isEmpty(districtName)){
+                return provinceName+" "+cityName;
+            }else {
+                return  provinceName+" "+cityName+" "+districtName;
+            }
         }
 
         public String getAddressId() {

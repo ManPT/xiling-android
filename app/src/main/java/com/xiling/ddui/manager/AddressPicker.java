@@ -14,6 +14,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AddressPicker {
 
@@ -196,29 +197,31 @@ public class AddressPicker {
                 .build();
         pvOptions.setPicker(pData, cData, aData);
 
-        if (!TextUtils.isEmpty(provinceId) && !TextUtils.isEmpty(cityId) && !TextUtils.isEmpty(areaId)) {
+        if (!TextUtils.isEmpty(provinceId) ) {
             Province currentProvince = getProvinceById(provinceId);
             if (currentProvince != null) {
                 int pIndex = pData.indexOf(currentProvince);
+                int cIndex = 0, aIndex = 0;
                 if (pIndex > -1) {
-                    City currentCity = getCityById(pIndex, cityId);
-                    if (currentCity != null) {
-                        int cIndex = cData.get(pIndex).indexOf(currentCity);
-                        if (cIndex > -1) {
-                            Area currentArea = getAreaById(pIndex, cIndex, areaId);
-                            if (currentArea != null) {
-                                int aIndex = aData.get(pIndex).get(cIndex).indexOf(currentArea);
-                                if (aIndex > -1) {
-                                    DLog.d("find default value:" + pIndex + "," + cIndex + "," + aIndex);
-                                    pvOptions.setSelectOptions(pIndex, cIndex, aIndex);
+                    if (!TextUtils.isEmpty(cityId)){
+                        City currentCity = getCityById(pIndex, cityId);
+                        if (currentCity != null) {
+                             cIndex = cData.get(pIndex).indexOf(currentCity);
+                            if (cIndex > -1) {
+                                if (!TextUtils.isEmpty(areaId)){
+                                    Area currentArea = getAreaById(pIndex, cIndex, areaId);
+                                    if (currentArea != null) {
+                                         aIndex = aData.get(pIndex).get(cIndex).indexOf(currentArea);
+                                    }
                                 }
                             }
                         }
                     }
+
+
+                    pvOptions.setSelectOptions(pIndex, cIndex, aIndex);
                 }
-
             }
-
         }
 
         pvOptions.show();
@@ -289,6 +292,17 @@ public class AddressPicker {
         return province;
     }
 
+    public  List<Province> getProvinceListByName(String name) {
+        List<Province> provinceList = new ArrayList<>();
+        for (Province item : provinces) {
+            String itemName = item.getName();
+            if (itemName.equals(name)) {
+                provinceList .add(item);
+            }
+        }
+        return provinceList;
+    }
+
     public int getProvinceIndex(Province province) {
         return pData.indexOf(province);
     }
@@ -310,6 +324,24 @@ public class AddressPicker {
         for (City item : data) {
             if (name.equals(item.getName())) {
                 city = item;
+            }
+        }
+        return city;
+    }
+
+    public List<City> getCityListByName(String provinceId, String name) {
+        List<City> city = new ArrayList<>();
+        ArrayList<City> data = new ArrayList<>();
+
+        for (City item : citys){
+            if (item.pId.equals(provinceId)){
+                data.add(item);
+            }
+        }
+
+        for (City item : data) {
+            if (name.equals(item.getName())) {
+                city.add(item);
             }
         }
         return city;
@@ -337,6 +369,23 @@ public class AddressPicker {
         for (Area item : data) {
             if (name.equals(item.getName())) {
                 area = item;
+            }
+        }
+        return area;
+    }
+
+    public List<Area> getAreaListByName(String cityId, String name) {
+        List<Area> area = new ArrayList<>();
+        ArrayList<Area> data = new ArrayList<>();
+        for (Area item : areas){
+            if (item.cId.equals(cityId)){
+                data.add(item);
+            }
+        }
+
+        for (Area item : data) {
+            if (name.equals(item.getName())) {
+                area.add(item) ;
             }
         }
         return area;

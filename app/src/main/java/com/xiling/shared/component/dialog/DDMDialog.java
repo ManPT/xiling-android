@@ -27,6 +27,9 @@ public class DDMDialog extends Dialog {
 
     @BindView(R.id.tv_content)
     TextView mTvContent;
+    @BindView(R.id.tv_title)
+    TextView mTvTitle;
+
     @BindView(R.id.tv_btn_confirm)
     TextView mTvBtnPositive;
     @BindView(R.id.tv_btn_cancel)
@@ -37,6 +40,7 @@ public class DDMDialog extends Dialog {
     private long mInterval = 1000;
 
     private CharSequence mContent;
+    private String mTitle;
     private int mContentGravity = -1;
 
     private boolean mEnableClose = true;
@@ -70,6 +74,14 @@ public class DDMDialog extends Dialog {
     }
 
     private void initView() {
+
+
+        if (TextUtils.isEmpty(mTitle)){
+            mTvTitle.setVisibility(View.GONE);
+        }else{
+            mTvTitle.setVisibility(View.VISIBLE);
+            mTvTitle.setText(mTitle);
+        }
 
         if (!TextUtils.isEmpty(mContent)) {
             mTvContent.setText(mContent);
@@ -166,6 +178,7 @@ public class DDMDialog extends Dialog {
     }
 
     public DDMDialog setTitle(String title){
+        mTitle = title;
         return this;
     }
 

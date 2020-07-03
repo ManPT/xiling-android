@@ -250,6 +250,37 @@ public class ShareUtilsNew {
         }
     }
 
+    public static String getClipMessage(Context context) {
+        ClipboardManager manager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        if (manager != null) {
+            if (manager.hasPrimaryClip() && manager.getPrimaryClip().getItemCount() > 0) {
+                CharSequence addedText = manager.getPrimaryClip().getItemAt(0).getText();
+                String addedTextString = String.valueOf(addedText);
+                if (!TextUtils.isEmpty(addedTextString)) {
+                    return addedTextString;
+                }
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 清空剪贴板内容
+     */
+    public static void clearClipboard(Context context) {
+        ClipboardManager manager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        if (manager != null) {
+            try {
+                manager.setPrimaryClip(manager.getPrimaryClip());
+                manager.setText("");
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
+
+
     public static void shareVideo(Context context, String videourl, String title, String imgUrl, String content, SHARE_MEDIA share_media) {
         shareVideo(
                 context,
