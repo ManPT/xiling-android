@@ -2,6 +2,7 @@ package com.xiling.ddui.custom;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,8 @@ public class ScreeningView extends RelativeLayout {
     TextView tvProfit;
     @BindView(R.id.profitStatusView)
     ImageView profitStatusView;
+    @BindView(R.id.rel_screening)
+    RelativeLayout relScreening;
 
     /**
      * 排序属性 0-价格,1-上新,2-销量
@@ -79,6 +82,13 @@ public class ScreeningView extends RelativeLayout {
     public ScreeningView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initView(context);
+    }
+
+    /**
+     * 隐藏筛选
+     */
+    public void hideScreening(){
+        relScreening.setVisibility(View.GONE);
     }
 
     private void initView(final Context context) {

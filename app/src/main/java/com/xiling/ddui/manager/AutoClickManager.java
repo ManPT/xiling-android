@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import com.xiling.ddui.activity.BrandActivity;
 import com.xiling.ddui.activity.DDProductDetailActivity;
+import com.xiling.ddui.activity.ShipmentsActivity;
 import com.xiling.ddui.bean.AutoClickBean;
 import com.xiling.module.page.WebViewActivity;
 
@@ -33,6 +34,9 @@ public class AutoClickManager {
                 break;
             case "spuDetail":
                 DDProductDetailActivity.start(context, parse.getQueryParameter("spuId"));
+                break;
+            case "shipments":
+                ShipmentsActivity.jumpCategoryActivity(context,parse.getQueryParameter("categoryId"),"一键代发","");
                 break;
             default:
                 break;

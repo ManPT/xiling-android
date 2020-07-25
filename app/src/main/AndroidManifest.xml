@@ -123,7 +123,14 @@
         <activity
             android:name=".ddui.activity.DDCouponActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" /> <!-- 设置key -->
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ddui.activity.ShipmentsActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
+        <!-- 设置key -->
         <!-- <meta-data -->
         <!-- android:name="com.amap.api.v2.apikey" -->
         <!-- android:value="3824cb3b931408d842fca21b5224c5a0"/> -->

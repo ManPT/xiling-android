@@ -52,7 +52,6 @@ public class AccessCaptchaActivity extends BaseActivity implements CaptchaBtn.On
     @BindView(R.id.tv_btn_next)
     Button btnOk;
     private String mPhoneNumber;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
