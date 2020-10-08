@@ -61,7 +61,6 @@ public abstract class BaseFragment extends Fragment {
         initDataNew();
         initListener();
         loadData();
-
     }
 
     @Override
